@@ -1,4 +1,4 @@
-name: Generate RULE-SET for Premium Edition of Clash
+name: Update All
 on:
   workflow_dispatch:
   schedule:
@@ -43,10 +43,10 @@ jobs:
 
         shell: bash
 
-      - name: Checkout the "hidden" branch
+      - name: Checkout the "main" branch
         uses: actions/checkout@v6
         with:
-          ref: hidden
+          ref: main
 
       - name: Generate icloud.txt file
         run: |

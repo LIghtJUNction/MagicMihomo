@@ -153,7 +153,9 @@ jobs:
         run: |
           rm *.txt
           rm -rf publish
-          rename .txt .yaml ./ruleset/*.txt
+          for file in ./ruleset/*.txt; do
+            mv -f "$file" "${file%.txt}.yaml"
+          done
 
       - name: Auto-commit changes
         uses: stefanzweifel/git-auto-commit-action@v7

@@ -153,7 +153,7 @@ jobs:
         run: |
           rm *.txt
           rm -rf publish
-          mv -f ruleset/*.txt ruleset/*.yaml
+          mv ./ruleset/*.txt ./ruleset/*.yaml
 
       - name: Auto-commit changes
         uses: stefanzweifel/git-auto-commit-action@v7

@@ -144,13 +144,6 @@ jobs:
           mkdir -p publish
           cp *.txt ./publish/
 
-      - name: Purge jsdelivr CDN
-        run: |
-          cd publish || exit 1
-          for file in $(ls); do
-            curl -i "https://purge.jsdelivr.net/gh/${{ github.repository }}@release/${file}"
-          done
-
       - name: Move files to ruleset directory
         run: |
           mkdir -p ruleset

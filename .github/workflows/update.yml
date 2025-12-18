@@ -124,20 +124,11 @@ jobs:
           echo "payload:" > bing.txt
           curl -sSL ${bing} | perl -ne '/(.+\/\d+)/ && print "  - |$1|\n"' | sed "s/|/'/g" >> bing.txt
 
-      - name: Update Country.mmdb
+      - name: Update GeoData
         run: |
-          rm -f Country.mmdb || echo "-"
-          curl -sSL ${mmdb} > Country.mmdb
-
-      - name: Update GeoIP.dat
-        run: |
-          rm -f GeoIP.dat || echo "-"
-          curl -sSL ${geoip} > GeoIP.dat
-
-      - name: Update GeoSite.dat
-        run: |
-          rm -f GeoSite.dat || echo "-"
-          curl -sSL ${geosite} > GeoSite.dat
+          curl -sSL "${mmdb}" -o Country.mmdb
+          curl -sSL "${geoip}" -o GeoIP.dat
+          curl -sSL "${geosite}" -o GeoSite.dat
 
       - name: Move files to publish directory
         run: |

@@ -37,9 +37,9 @@ jobs:
           echo "telegram_cidr=https://raw.githubusercontent.com/Loyalsoldier/geoip/release/text/telegram.txt" >> $GITHUB_ENV
           echo "bing=https://rules.xkww3n.cyou/yaml/bing.yaml" >> $GITHUB_ENV
 
-          echo "geoip=https://ghp.ci/https://github.com/DustinWin/ruleset_geodata/releases/download/clash/geoip-all.dat" >> $GITHUB_ENV
-          echo "geosite=https://ghp.ci/https://github.com/DustinWin/ruleset_geodata/releases/download/clash/geosite-all.dat" >> $GITHUB_ENV
-          echo "mmdb=https://ghp.ci/https://github.com/DustinWin/ruleset_geodata/releases/download/clash/Country.mmdb" >> $GITHUB_ENV
+          echo "geoip=https://github.com/DustinWin/ruleset_geodata/releases/download/clash/geoip-all.dat" >> $GITHUB_ENV
+          echo "geosite=https://github.com/DustinWin/ruleset_geodata/releases/download/clash/geosite-all.dat" >> $GITHUB_ENV
+          echo "mmdb=https://github.com/DustinWin/ruleset_geodata/releases/download/clash/Country.mmdb" >> $GITHUB_ENV
 
         shell: bash
 

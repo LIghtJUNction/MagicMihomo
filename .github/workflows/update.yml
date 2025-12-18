@@ -156,6 +156,11 @@ jobs:
           mkdir -p ruleset
           cp -f ./publish/*.txt ./ruleset/
 
+      - name: Clean up
+        run: |
+          rm *.txt
+          rm -rf publish
+
       - name: Auto-commit changes
         uses: stefanzweifel/git-auto-commit-action@v7
         with:

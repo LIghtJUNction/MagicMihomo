@@ -141,18 +141,6 @@ jobs:
           mkdir -p publish
           cp *.txt ./publish/
 
-      - name: Release and upload assets
-        uses: softprops/action-gh-release@v2
-        with:
-          name: ${{ env.RELEASE_NAME }}
-          tag_name: ${{ env.TAG_NAME }}
-          draft: false
-          prerelease: false
-          files: |
-            ./publish/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Purge jsdelivr CDN
         run: |
           cd publish || exit 1

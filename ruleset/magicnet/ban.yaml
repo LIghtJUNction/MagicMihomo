@@ -1,1 +1,40 @@
 payload:
+  # === 小米 (Xiaomi/MIUI) ===
+  - DOMAIN,api.sec.miui.com
+  - DOMAIN,data.mistat.xiaomi.com
+  - DOMAIN,tracking.miui.com
+  - DOMAIN,stat.miliao.com
+  - DOMAIN,abtest.mistat.xiaomi.com
+  - DOMAIN-KEYWORD,miui-tracking
+  
+  # === 华为 (Huawei/HarmonyOS) ===
+  - DOMAIN,api.upc.huawei.com
+  - DOMAIN,metrics.hicloud.com
+  - DOMAIN,log.hicloud.com
+  - DOMAIN,metrics1.data.hicloud.com
+  - DOMAIN,grs.hicloud.com
+  - DOMAIN-KEYWORD,hicloud-metrics
+  
+  # === OPPO / 一加 (OnePlus) / Realme ===
+  - DOMAIN,open.oneplus.net
+  - DOMAIN,data.ads.oppomobile.com
+  - DOMAIN,data.oppo.com
+  - DOMAIN,log.oppo.com
+  - DOMAIN,api.creativity.oppo.com
+  - DOMAIN,audit.oppo.com
+  - DOMAIN,statistical.oppo.com
+  - DOMAIN-KEYWORD,oppomobile
+  
+  # === Vivo ===
+  - DOMAIN,data-log.vivo.com.cn
+  - DOMAIN,log.origin.bigdata.vivo.com.cn
+  - DOMAIN,ad.vivo.com.cn
+  - DOMAIN,ststis.vivo.com.cn
+  
+  # === 通用系统级监控与推送 (SDK) ===
+  - DOMAIN-KEYWORD,umeng.com        # 友盟统计
+  - DOMAIN-KEYWORD,igexin.com      # 个推统计
+  - DOMAIN-KEYWORD,getui.com       # 个推统计
+  - DOMAIN,szmg.qq.com             # 腾讯移动分析
+  - DOMAIN,oth.data.intl.aliyun.com # 阿里云数据上报
+  - DOMAIN,safebrowsing.urlsec.qq.com # 网址安全扫描

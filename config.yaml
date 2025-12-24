@@ -894,6 +894,12 @@ rule-providers:
     url: https://rules.xkww3n.cyou/yaml/bing.yaml
     path: ./ruleset/bing.yaml
     interval: 86400
+  ban:
+    type: http
+    behavior: classical
+    url: 
+    path: ./ruleset/magicnet/ban.yaml
+    interval: 86400
 rules:
   - RULE-SET,lancidr,DIRECT
   - RULE-SET,private,DIRECT

@@ -112,7 +112,7 @@ dns:
     geoip-code: CN
     geosite:
       - cn
-      - games-cn
+      - games
       - apple-cn
       - microsoft-cn
     ipcidr:
@@ -268,50 +268,17 @@ proxy-groups:
     proxies:
       - 🌏 快速选择代理
       - 🔰 环大陆
-      - 📺 哔哩哔哩
       - 🍎 苹果服务
-      - 📹 油管视频
-      - 🎵 TikTok
       - 🤖 人工智能
-      - 🍎 Apple TV+
       - 🇬 谷歌服务
       - 🎮 游戏服务
-      - 🎥 奈飞视频
-      - 📽️ 迪士尼+
-      - 🎞️ Max
-      - 🎬 Prime Video
+      - 🎥 流媒体
       - REJECT
       - DIRECT
       - temp_1
       - temp_2
       - temp_3
-  - name: 📺 哔哩哔哩
-    type: select
-    proxies:
-      - DIRECT
-      - 🌏 快速选择代理
-      - 🔰 环大陆
-      - 🇭🇰 选择香港节点
-      - 🇺🇲 选择美国节点
-      - 🇯🇵 选择日本节点
-      - 🇦🇺 选择澳大利亚节点
-      - 🇺🇦 选择乌克兰节点
-      - 🇨🇳 选择台湾节点
-      - 🇸🇬 选择新加坡节点
-      - 🇬🇧 选择英国节点
-      - 🇦🇷 选择阿根廷节点
-      - 🇷🇺 选择俄罗斯节点
-      - 🇹🇷 选择土耳其节点
-      - 🇰🇷 选择韩国节点
-      - 🇮🇳 选择印度节点
-      - 🇩🇪 选择德国节点
-      - 🇨🇦 选择加拿大节点
-      - 🇫🇷 选择法国节点
-      - REJECT
-      - DIRECT
-      - temp_1
-      - temp_2
-      - temp_3
+
   - name: 🍎 苹果服务
     type: select
     proxies:
@@ -339,84 +306,7 @@ proxy-groups:
       - temp_1
       - temp_2
       - temp_3
-  - name: 📹 油管视频
-    type: select
-    proxies:
-      - 🌏 快速选择代理
-      - 🔰 环大陆
-      - 🇭🇰 选择香港节点
-      - 🇺🇲 选择美国节点
-      - 🇯🇵 选择日本节点
-      - 🇦🇺 选择澳大利亚节点
-      - 🇺🇦 选择乌克兰节点
-      - 🇨🇳 选择台湾节点
-      - 🇸🇬 选择新加坡节点
-      - 🇬🇧 选择英国节点
-      - 🇦🇷 选择阿根廷节点
-      - 🇷🇺 选择俄罗斯节点
-      - 🇹🇷 选择土耳其节点
-      - 🇰🇷 选择韩国节点
-      - 🇮🇳 选择印度节点
-      - 🇩🇪 选择德国节点
-      - 🇨🇦 选择加拿大节点
-      - 🇫🇷 选择法国节点
-      - REJECT
-      - DIRECT
-      - temp_1
-      - temp_2
-      - temp_3
-  - name: 🎵 TikTok
-    type: select
-    proxies:
-      - 🔰 环大陆
-      - 🌏 快速选择代理
-      - 🇭🇰 选择香港节点
-      - 🇺🇲 选择美国节点
-      - 🇯🇵 选择日本节点
-      - 🇦🇺 选择澳大利亚节点
-      - 🇺🇦 选择乌克兰节点
-      - 🇨🇳 选择台湾节点
-      - 🇸🇬 选择新加坡节点
-      - 🇬🇧 选择英国节点
-      - 🇦🇷 选择阿根廷节点
-      - 🇷🇺 选择俄罗斯节点
-      - 🇹🇷 选择土耳其节点
-      - 🇰🇷 选择韩国节点
-      - 🇮🇳 选择印度节点
-      - 🇩🇪 选择德国节点
-      - 🇨🇦 选择加拿大节点
-      - 🇫🇷 选择法国节点
-      - REJECT
-      - DIRECT
-      - temp_1
-      - temp_2
-      - temp_3
-  - name: 🍎 Apple TV+
-    type: select
-    proxies:
-      - 🌏 快速选择代理
-      - 🔰 环大陆
-      - 🇭🇰 选择香港节点
-      - 🇺🇲 选择美国节点
-      - 🇯🇵 选择日本节点
-      - 🇦🇺 选择澳大利亚节点
-      - 🇺🇦 选择乌克兰节点
-      - 🇨🇳 选择台湾节点
-      - 🇸🇬 选择新加坡节点
-      - 🇬🇧 选择英国节点
-      - 🇦🇷 选择阿根廷节点
-      - 🇷🇺 选择俄罗斯节点
-      - 🇹🇷 选择土耳其节点
-      - 🇰🇷 选择韩国节点
-      - 🇮🇳 选择印度节点
-      - 🇩🇪 选择德国节点
-      - 🇨🇦 选择加拿大节点
-      - 🇫🇷 选择法国节点
-      - REJECT
-      - DIRECT
-      - temp_1
-      - temp_2
-      - temp_3
+ 
   - name: 🇬 谷歌服务
     type: select
     proxies:
@@ -470,7 +360,7 @@ proxy-groups:
       - temp_2
       - temp_3
       - DIRECT
-  - name: 🎥 奈飞视频
+  - name: 🎥 流媒体
     type: select
     proxies:
       - 🔰 环大陆
@@ -496,84 +386,8 @@ proxy-groups:
       - temp_1
       - temp_2
       - temp_3
-  - name: 📽️ 迪士尼+
-    type: select
-    proxies:
-      - 🔰 环大陆
-      - 🌏 快速选择代理
-      - 🇭🇰 选择香港节点
-      - 🇺🇲 选择美国节点
-      - 🇯🇵 选择日本节点
-      - 🇦🇺 选择澳大利亚节点
-      - 🇺🇦 选择乌克兰节点
-      - 🇨🇳 选择台湾节点
-      - 🇸🇬 选择新加坡节点
-      - 🇬🇧 选择英国节点
-      - 🇦🇷 选择阿根廷节点
-      - 🇷🇺 选择俄罗斯节点
-      - 🇹🇷 选择土耳其节点
-      - 🇰🇷 选择韩国节点
-      - 🇮🇳 选择印度节点
-      - 🇩🇪 选择德国节点
-      - 🇨🇦 选择加拿大节点
-      - 🇫🇷 选择法国节点
-      - REJECT
-      - DIRECT
-      - temp_1
-      - temp_2
-      - temp_3
-  - name: 🎞️ Max
-    type: select
-    proxies:
-      - 🔰 环大陆
-      - 🌏 快速选择代理
-      - 🇭🇰 选择香港节点
-      - 🇺🇲 选择美国节点
-      - 🇯🇵 选择日本节点
-      - 🇦🇺 选择澳大利亚节点
-      - 🇺🇦 选择乌克兰节点
-      - 🇨🇳 选择台湾节点
-      - 🇸🇬 选择新加坡节点
-      - 🇬🇧 选择英国节点
-      - 🇦🇷 选择阿根廷节点
-      - 🇷🇺 选择俄罗斯节点
-      - 🇹🇷 选择土耳其节点
-      - 🇰🇷 选择韩国节点
-      - 🇮🇳 选择印度节点
-      - 🇩🇪 选择德国节点
-      - 🇨🇦 选择加拿大节点
-      - 🇫🇷 选择法国节点
-      - REJECT
-      - DIRECT
-      - temp_1
-      - temp_2
-      - temp_3
-  - name: 🎬 Prime Video
-    type: select
-    proxies:
-      - 🔰 环大陆
-      - 🌏 快速选择代理
-      - 🇭🇰 选择香港节点
-      - 🇺🇲 选择美国节点
-      - 🇯🇵 选择日本节点
-      - 🇦🇺 选择澳大利亚节点
-      - 🇺🇦 选择乌克兰节点
-      - 🇨🇳 选择台湾节点
-      - 🇸🇬 选择新加坡节点
-      - 🇬🇧 选择英国节点
-      - 🇦🇷 选择阿根廷节点
-      - 🇷🇺 选择俄罗斯节点
-      - 🇹🇷 选择土耳其节点
-      - 🇰🇷 选择韩国节点
-      - 🇮🇳 选择印度节点
-      - 🇩🇪 选择德国节点
-      - 🇨🇦 选择加拿大节点
-      - 🇫🇷 选择法国节点
-      - REJECT
-      - DIRECT
-      - temp_1
-      - temp_2
-      - temp_3
+
+  
   - name: 📲 电报消息
     type: select
     proxies:
@@ -919,18 +733,11 @@ rules:
   - RULE-SET,telegramcidr,📲 电报消息
   - RULE-SET,icloud,🔰 iCloud
   - RULE-SET,bing,🔰 BING
-  - GEOSITE,games-cn,🎮 游戏服务
-  - GEOSITE,netflix,🎥 奈飞视频
-  - GEOSITE,disney,📽️ 迪士尼+
-  - GEOSITE,max,🎞️ Max
-  - GEOSITE,primevideo,🎬 Prime Video
-  - GEOSITE,appletv,🍎 Apple TV+
+  - GEOSITE,games,🎮 游戏服务
+  - GEOSITE,media,🎥 流媒体
   - GEOSITE,apple-cn,🍎 苹果服务
   - RULE-SET,apple,🍎 苹果服务
   - GEOSITE,google-cn,🇬 谷歌服务
-  - GEOSITE,youtube,📹 油管视频
-  - GEOSITE,tiktok,🎵 TikTok
-  - GEOSITE,bilibili,📺 哔哩哔哩
   - RULE-SET,applications,🔰 国内网站
   - RULE-SET,direct,🔰 国内网站
   - RULE-SET,cncidr,🔰 国内网站

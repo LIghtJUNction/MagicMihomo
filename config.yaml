@@ -894,15 +894,17 @@ rule-providers:
     url: https://rules.xkww3n.cyou/yaml/bing.yaml
     path: ./ruleset/bing.yaml
     interval: 86400
-  ban:
+  mnban:
     type: http
     behavior: classical
-    url: 
+    url: https://raw.githubusercontent.com/LIghtJUNction/MagicMihomo/main/ruleset/magicnet/ban.yaml
     path: ./ruleset/magicnet/ban.yaml
     interval: 86400
+    
 rules:
   - RULE-SET,lancidr,DIRECT
   - RULE-SET,private,DIRECT
+  - RULE-SET,mnban,REJECT
   - GEOSITE,private,DIRECT
   - IP-CIDR,127.0.0.1/32,REJECT,no-resolve
   - IP-CIDR,198.18.0.1/16,REJECT,no-resolve
@@ -940,3 +942,10 @@ rules:
   - RULE-SET,google,🔰 环大陆
   - RULE-SET,proxy,🔰 环大陆
   - MATCH,🌏 规则之外
+  
+  
+  
+  
+  
+  
+  

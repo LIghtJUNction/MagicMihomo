@@ -1,1 +1,38 @@
 payload:
+  # --- 小米 (Xiaomi) ---
+  - DOMAIN,data.mistat.xiaomi.com        # 核心统计数据
+  - DOMAIN,tracking.miui.com             # 用户行为追踪
+  - DOMAIN,api.sec.miui.com              # 都root了，手机管家应该删了
+
+  # --- 华为 (Huawei) ---
+  - DOMAIN,metrics.hicloud.com           # 核心指标统计
+  - DOMAIN,metrics1.data.hicloud.com     # 核心指标统计
+  - DOMAIN,api.upc.huawei.com            # 用户体验改进计划
+  # - DOMAIN,log.hicloud.com               # 错误日志上传
+  # - DOMAIN,grs.hicloud.com             # [重要] 华为全球路由服务
+
+  # --- OPPO / 一加 (OnePlus) ---
+  - DOMAIN,open.oneplus.net              # 一加核心数据收集
+  - DOMAIN,data.ads.oppomobile.com       # 广告统计
+  - DOMAIN,statistical.oppo.com          # OPPO统计服务
+  # - DOMAIN,data.oppo.com               # [重要] 涉及账号与基本数据服务
+  # - DOMAIN,log.oppo.com                # [非必需封禁] 系统运行日志
+
+  # --- Vivo ---
+  - DOMAIN,log.origin.bigdata.vivo.com.cn # 大数据收集
+  - DOMAIN,ad.vivo.com.cn                # 广告推送统计
+  # - DOMAIN,data-log.vivo.com.cn        # [非必需封禁] 系统基础日志
+
+  # --- 通用三方监控 (高权重) ---
+  - DOMAIN-KEYWORD,umeng.com             # 友盟统计 (国内App几乎标配，强烈建议封禁)
+  - DOMAIN-KEYWORD,miui-tracking         # 移动端通用追踪特征
+  - DOMAIN,szmg.qq.com                   # 腾讯移动分析
+  - DOMAIN,oth.data.intl.aliyun.com      # 阿里云统计
+  
+  # - DOMAIN-KEYWORD,getui.com           # [关键] 个推：封禁后国内多数App(如闲鱼)无消息推送
+  # - DOMAIN-KEYWORD,igexin.com          # [关键] 个推相关
+  - DOMAIN,safebrowsing.urlsec.qq.com    # [安全] 网址检测
+  # --- 提交 PR 添加更多 --- 
+  
+
+  

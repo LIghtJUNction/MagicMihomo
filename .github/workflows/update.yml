@@ -38,7 +38,7 @@ jobs:
           echo "cn_cidr=https://raw.githubusercontent.com/Loyalsoldier/geoip/release/text/cn.txt" >> $GITHUB_ENV
           echo "lan_cidr=https://raw.githubusercontent.com/Loyalsoldier/geoip/release/text/private.txt" >> $GITHUB_ENV
           echo "telegram_cidr=https://raw.githubusercontent.com/Loyalsoldier/geoip/release/text/telegram.txt" >> $GITHUB_ENV
-          echo "bing=https://rules.xkww3n.cyou/yaml/bing.txt" >> $GITHUB_ENV
+          echo "bing=https://rules.xkww3n.cyou/classical/bing.txt" >> $GITHUB_ENV
 
           echo "geoip=https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-geodata/geoip-all.dat" >> $GITHUB_ENV
           echo "geosite=https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-geodata/geosite-all.dat" >> $GITHUB_ENV

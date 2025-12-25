@@ -8,6 +8,7 @@ proxy-providers:
       enable: true
       url: http://www.gstatic.com/generate_204
       interval: 3600
+
 port: 7890
 socks-port: 7891
 mixed-port: 7892
@@ -15,7 +16,7 @@ redir-port: 9797
 tproxy-port: 9898
 external-controller: 127.0.0.1:9090
 external-ui: ./ui
-external-ui-name: lightjunction
+external-ui-name: cubex
 external-ui-url: https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip
 ipv6: true
 allow-lan: true
@@ -66,15 +67,18 @@ dns:
     - "*.mcdn.bilivideo.cn"
     - localhost.ptlogin2.qq.com
     - WORKGROUP
+
+  # 参考：
   nameserver:
     - quic://dns.adguard.com:784#🌏 快速选择代理
     - https://1.1.1.1/dns-query#🌏 快速选择代理
     - https://1.0.0.1/dns-query#🌏 快速选择代理
-    - tls://223.5.5.5:853##🌏 快速选择代理
-    - https://doh.pub/dns-query##🌏 快速选择代理
-    - https://dns.alidns.com/dns-query##🌏 快速选择代理&h3=true
-    - https://mozilla.cloudflare-dns.com/dns-query##🌏 快速选择代理&h3=true
+    - tls://223.5.5.5:853#🌏 快速选择代理
+    - https://doh.pub/dns-query#🌏 快速选择代理
+    - https://dns.alidns.com/dns-query#🌏 快速选择代理&h3=true
+    - https://mozilla.cloudflare-dns.com/dns-query#🌏 快速选择代理&h3=true
     - dhcp://en0#🌏 快速选择代理
+
   default-nameserver:
     - tls://1.12.12.12:853
     - tls://223.5.5.5:853
@@ -107,7 +111,7 @@ dns:
     - https://1.1.1.1/dns-query#🌏 快速选择代理&h3=true
     - https://1.0.0.1/dns-query#🌏 快速选择代理
     - tls://1dot1dot1dot1.cloudflare-dns.com#🌏 快速选择代理
-  
+
 tun:
   enable: true
   device: utun
@@ -292,7 +296,7 @@ proxy-groups:
       - temp_1
       - temp_2
       - temp_3
- 
+
   - name: 🇬 谷歌服务
     type: select
     proxies:
@@ -373,7 +377,6 @@ proxy-groups:
       - temp_2
       - temp_3
 
-  
   - name: 📲 电报消息
     type: select
     proxies:
@@ -700,11 +703,12 @@ rule-providers:
     url: https://raw.githubusercontent.com/LIghtJUNction/MagicMihomo/main/ruleset/magicnet/ban.yaml
     path: ./ruleset/magicnet/ban.yaml
     interval: 86400
-    
+
 rules:
   - RULE-SET,lancidr,DIRECT
   - RULE-SET,private,DIRECT
   - RULE-SET,mnban,REJECT
+  - RULE-SET,mndirect,DIRECT
   - GEOSITE,private,DIRECT
   - IP-CIDR,127.0.0.1/32,REJECT,no-resolve
   - IP-CIDR,198.18.0.1/16,REJECT,no-resolve
@@ -735,10 +739,3 @@ rules:
   - RULE-SET,google,🔰 环大陆
   - RULE-SET,proxy,🔰 环大陆
   - MATCH,🌏 规则之外
-  
-  
-  
-  
-  
-  
-  

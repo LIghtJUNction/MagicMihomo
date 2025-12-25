@@ -2,7 +2,7 @@ proxy-providers:
   myclash:
     type: http
     path: ./myclash.yaml
-    url: https://example.com/api
+    url: http://comm.cczzuu.top/node/20251225-clash.yaml # 尽早换成自己的
     interval: 3600
     health-check:
       enable: true

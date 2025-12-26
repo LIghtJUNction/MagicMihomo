@@ -2,13 +2,12 @@ proxy-providers:
   myclash:
     type: http
     path: ./myclash.yaml
-    url: http://comm.cczzuu.top/node/20251225-clash.yaml # 尽早换成自己的
+    url: http://comm.cczzuu.top/node/20251225-clash.yaml
     interval: 3600
     health-check:
       enable: true
       url: http://www.gstatic.com/generate_204
       interval: 3600
-
 port: 7890
 socks-port: 7891
 mixed-port: 7892
@@ -31,16 +30,16 @@ log-level: error
 global-client-fingerprint: random
 geodata-loader: standard
 find-process-mode: strict
-bind-address: "*"
+bind-address: '*'
 hosts:
   time.facebook.com: 17.253.84.125
   time.android.com: 17.253.84.125
-  "*.mihomo.dev": 127.0.0.1
+  '*.mihomo.dev': 127.0.0.1
   .dev: 127.0.0.1
   alpha.mihomo.dev: ::1
   test.com:
-    - 1.1.1.1
-    - 2.2.2.2
+  - 1.1.1.1
+  - 2.2.2.2
   home.lan: lan
 dns:
   cache-algorithm: arc
@@ -53,88 +52,84 @@ dns:
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
   fake-ip-filter:
-    - "*"
-    - +.lan
-    - +.local
-    - +.leigod.com
-    - +.vivox.com
-    - +.stun.+
-    - .n.n.srv.nintendo.net
-    - +.stun.playstation.net
-    - xbox.*.*.microsoft.com
-    - "*.*.xboxlive.com"
-    - lens.l.google.com
-    - "*.mcdn.bilivideo.cn"
-    - localhost.ptlogin2.qq.com
-    - WORKGROUP
-
-  # 参考：
+  - '*'
+  - +.lan
+  - +.local
+  - +.leigod.com
+  - +.vivox.com
+  - +.stun.+
+  - .n.n.srv.nintendo.net
+  - +.stun.playstation.net
+  - xbox.*.*.microsoft.com
+  - '*.*.xboxlive.com'
+  - lens.l.google.com
+  - '*.mcdn.bilivideo.cn'
+  - localhost.ptlogin2.qq.com
+  - WORKGROUP
   nameserver:
-    - quic://dns.adguard.com:784#🌏 快速选择代理
-    - https://1.1.1.1/dns-query#🌏 快速选择代理
-    - https://1.0.0.1/dns-query#🌏 快速选择代理
-    - tls://223.5.5.5:853#🌏 快速选择代理
-    - https://doh.pub/dns-query#🌏 快速选择代理
-    - https://dns.alidns.com/dns-query#🌏 快速选择代理&h3=true
-    - https://mozilla.cloudflare-dns.com/dns-query#🌏 快速选择代理&h3=true
-    - dhcp://en0#🌏 快速选择代理
-
+  - quic://dns.adguard.com:784#🌏 快速选择代理
+  - https://1.1.1.1/dns-query#🌏 快速选择代理
+  - https://1.0.0.1/dns-query#🌏 快速选择代理
+  - tls://223.5.5.5:853#🌏 快速选择代理
+  - https://doh.pub/dns-query#🌏 快速选择代理
+  - https://dns.alidns.com/dns-query#🌏 快速选择代理&h3=true
+  - https://mozilla.cloudflare-dns.com/dns-query#🌏 快速选择代理&h3=true
+  - dhcp://en0#🌏 快速选择代理
   default-nameserver:
-    - tls://1.12.12.12:853
-    - tls://223.5.5.5:853
-    - https://223.5.5.5/dns-query
-    - tcp://119.29.29.29
-    - tcp://223.6.6.6
-    - system
+  - tls://1.12.12.12:853
+  - tls://223.5.5.5:853
+  - https://223.5.5.5/dns-query
+  - tcp://119.29.29.29
+  - tcp://223.6.6.6
+  - system
   nameserver-policy:
     geosite:cn,private:
-      - https://223.5.5.5/dns-query
-      - https://doh.pub/dns-query
-      - https://doh.360.cn/dns-query
-      - tls://223.5.5.5
-      - tls://dot.pub
-    rule-set:direct,private,apple,icloud:
-      - https://223.5.5.5/dns-query
-      - https://doh.pub/dns-query
-      - https://doh.360.cn/dns-query
-      - tls://223.5.5.5
-      - tls://dot.pub
-  proxy-server-nameserver:
+    - https://223.5.5.5/dns-query
     - https://doh.pub/dns-query
     - https://doh.360.cn/dns-query
     - tls://223.5.5.5
     - tls://dot.pub
+    rule-set:direct,private,apple,icloud:
+    - https://223.5.5.5/dns-query
+    - https://doh.pub/dns-query
+    - https://doh.360.cn/dns-query
+    - tls://223.5.5.5
+    - tls://dot.pub
+  proxy-server-nameserver:
+  - https://doh.pub/dns-query
+  - https://doh.360.cn/dns-query
+  - tls://223.5.5.5
+  - tls://dot.pub
   fallback:
-    - quic://a.passcloud.xyz:784#🌏 快速选择代理
-    - tls://8.8.4.4:853#🌏 快速选择代理
-    - tcp://1.1.1.1#🌏 快速选择代理
-    - https://1.1.1.1/dns-query#🌏 快速选择代理&h3=true
-    - https://1.0.0.1/dns-query#🌏 快速选择代理
-    - tls://1dot1dot1dot1.cloudflare-dns.com#🌏 快速选择代理
-
+  - quic://a.passcloud.xyz:784#🌏 快速选择代理
+  - tls://8.8.4.4:853#🌏 快速选择代理
+  - tcp://1.1.1.1#🌏 快速选择代理
+  - https://1.1.1.1/dns-query#🌏 快速选择代理&h3=true
+  - https://1.0.0.1/dns-query#🌏 快速选择代理
+  - tls://1dot1dot1dot1.cloudflare-dns.com#🌏 快速选择代理
 tun:
   enable: true
   device: utun
   mtu: 9000
   stack: system
   dns-hijack:
-    - udp://any:53
-    - tcp://any:53
+  - udp://any:53
+  - tcp://any:53
   auto-route: true
   auto-detect-interface: true
   endpoint-independent-nat: false
   inet4-route-exclude-address:
-    - 192.168.0.0/16
+  - 192.168.0.0/16
   inet6-route-exclude-address:
-    - fc00::/7
+  - fc00::/7
   inet4-route-address:
-    - 0.0.0.0/1
-    - 128.0.0.0/1
+  - 0.0.0.0/1
+  - 128.0.0.0/1
   inet6-route-address:
-    - ::/1
-    - 8000::/1
+  - ::/1
+  - 8000::/1
   include_android_user:
-    - 0
+  - 0
 sniffer:
   enable: true
   force-dns-mapping: false
@@ -143,28 +138,28 @@ sniffer:
   sniff:
     TLS:
       ports:
-        - 443
-        - 8443
+      - 443
+      - 8443
     QUIC:
       ports:
-        - 443
+      - 443
     HTTP:
       ports:
-        - 80
-        - 8080-8880
+      - 80
+      - 8080-8880
       override-destination: true
   force-domain:
-    - google.com
-    - +.v2ex.com
+  - google.com
+  - +.v2ex.com
   skip-domain:
-    - Mijia Cloud
-    - +.apple.com
+  - Mijia Cloud
+  - +.apple.com
   sniffing:
-    - tls
-    - http
+  - tls
+  - http
   port-whitelist:
-    - "80"
-    - "443"
+  - '80'
+  - '443'
 profile:
   store-selected: true
   store-fake-ip: true
@@ -180,438 +175,435 @@ geox-url:
   mmdb: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-geodata/Country-all.mmdb
 proxies: null
 proxy-groups:
-  - name: 🌏 快速选择代理
-    type: select
-    proxies:
-      - 🇭🇰 选择香港节点
-      - 🇺🇲 选择美国节点
-      - 🇯🇵 选择日本节点
-      - 🇦🇺 选择澳大利亚节点
-      - 🇺🇦 选择乌克兰节点
-      - 🇨🇳 选择台湾节点
-      - 🇸🇬 选择新加坡节点
-      - 🇬🇧 选择英国节点
-      - 🇦🇷 选择阿根廷节点
-      - 🇷🇺 选择俄罗斯节点
-      - 🇹🇷 选择土耳其节点
-      - 🇰🇷 选择韩国节点
-      - 🇮🇳 选择印度节点
-      - 🇩🇪 选择德国节点
-      - 🇨🇦 选择加拿大节点
-      - 🇫🇷 选择法国节点
-      - REJECT
-      - DIRECT
-      - temp_1
-      - temp_2
-      - temp_3
-  - name: 🔰 环大陆
-    type: select
-    proxies:
-      - 🇺🇲 选择美国节点
-      - 🌏 快速选择代理
-      - 🇯🇵 选择日本节点
-      - 🇸🇬 选择新加坡节点
-      - 🇬🇧 选择英国节点
-      - 🇦🇷 选择阿根廷节点
-      - 🇷🇺 选择俄罗斯节点
-      - 🇹🇷 选择土耳其节点
-      - 🇰🇷 选择韩国节点
-      - 🇮🇳 选择印度节点
-      - 🇩🇪 选择德国节点
-      - 🇨🇦 选择加拿大节点
-      - 🇦🇺 选择澳大利亚节点
-      - 🇫🇷 选择法国节点
-      - 🇺🇦 选择乌克兰节点
-      - REJECT
-      - DIRECT
-      - temp_1
-      - temp_2
-      - temp_3
-  - name: 🤖 人工智能
-    type: select
-    proxies:
-      - 🔰 环大陆
-      - 🇺🇲 选择美国节点
-      - 🌏 快速选择代理
-      - 🇯🇵 选择日本节点
-      - 🇦🇺 选择澳大利亚节点
-      - 🇺🇦 选择乌克兰节点
-      - 🇸🇬 选择新加坡节点
-      - 🇬🇧 选择英国节点
-      - 🇦🇷 选择阿根廷节点
-      - 🇷🇺 选择俄罗斯节点
-      - 🇹🇷 选择土耳其节点
-      - 🇰🇷 选择韩国节点
-      - 🇮🇳 选择印度节点
-      - 🇩🇪 选择德国节点
-      - 🇨🇦 选择加拿大节点
-      - 🇫🇷 选择法国节点
-      - 🇭🇰 选择香港节点
-      - 🇨🇳 选择台湾节点
-      - REJECT
-      - DIRECT
-      - temp_1
-      - temp_2
-      - temp_3
-  - name: 📈 网络测试
-    type: select
-    proxies:
-      - 🌏 快速选择代理
-      - 🔰 环大陆
-      - 🍎 苹果服务
-      - 🤖 人工智能
-      - 🇬 谷歌服务
-      - 🎮 游戏服务
-      - 🎥 流媒体
-      - REJECT
-      - DIRECT
-      - temp_1
-      - temp_2
-      - temp_3
-
-  - name: 🍎 苹果服务
-    type: select
-    proxies:
-      - DIRECT
-      - 🌏 快速选择代理
-      - 🔰 环大陆
-      - 🇭🇰 选择香港节点
-      - 🇺🇲 选择美国节点
-      - 🇯🇵 选择日本节点
-      - 🇦🇺 选择澳大利亚节点
-      - 🇺🇦 选择乌克兰节点
-      - 🇨🇳 选择台湾节点
-      - 🇸🇬 选择新加坡节点
-      - 🇬🇧 选择英国节点
-      - 🇦🇷 选择阿根廷节点
-      - 🇷🇺 选择俄罗斯节点
-      - 🇹🇷 选择土耳其节点
-      - 🇰🇷 选择韩国节点
-      - 🇮🇳 选择印度节点
-      - 🇩🇪 选择德国节点
-      - 🇨🇦 选择加拿大节点
-      - 🇫🇷 选择法国节点
-      - REJECT
-      - DIRECT
-      - temp_1
-      - temp_2
-      - temp_3
-
-  - name: 🇬 谷歌服务
-    type: select
-    proxies:
-      - 🔰 环大陆
-      - 🌏 快速选择代理
-      - 🇭🇰 选择香港节点
-      - 🇺🇲 选择美国节点
-      - 🇯🇵 选择日本节点
-      - 🇦🇺 选择澳大利亚节点
-      - 🇺🇦 选择乌克兰节点
-      - 🇨🇳 选择台湾节点
-      - 🇸🇬 选择新加坡节点
-      - 🇬🇧 选择英国节点
-      - 🇦🇷 选择阿根廷节点
-      - 🇷🇺 选择俄罗斯节点
-      - 🇹🇷 选择土耳其节点
-      - 🇰🇷 选择韩国节点
-      - 🇮🇳 选择印度节点
-      - 🇩🇪 选择德国节点
-      - 🇨🇦 选择加拿大节点
-      - 🇫🇷 选择法国节点
-      - REJECT
-      - DIRECT
-      - temp_1
-      - temp_2
-      - temp_3
-  - name: 🎮 游戏服务
-    type: select
-    proxies:
-      - 🌏 快速选择代理
-      - DIRECT
-      - 🔰 环大陆
-      - 🇭🇰 选择香港节点
-      - 🇺🇲 选择美国节点
-      - 🇯🇵 选择日本节点
-      - 🇦🇺 选择澳大利亚节点
-      - 🇺🇦 选择乌克兰节点
-      - 🇨🇳 选择台湾节点
-      - 🇸🇬 选择新加坡节点
-      - 🇬🇧 选择英国节点
-      - 🇦🇷 选择阿根廷节点
-      - 🇷🇺 选择俄罗斯节点
-      - 🇹🇷 选择土耳其节点
-      - 🇰🇷 选择韩国节点
-      - 🇮🇳 选择印度节点
-      - 🇩🇪 选择德国节点
-      - 🇨🇦 选择加拿大节点
-      - 🇫🇷 选择法国节点
-      - REJECT
-      - temp_1
-      - temp_2
-      - temp_3
-      - DIRECT
-  - name: 🎥 流媒体
-    type: select
-    proxies:
-      - 🔰 环大陆
-      - 🌏 快速选择代理
-      - 🇭🇰 选择香港节点
-      - 🇺🇲 选择美国节点
-      - 🇯🇵 选择日本节点
-      - 🇦🇺 选择澳大利亚节点
-      - 🇺🇦 选择乌克兰节点
-      - 🇨🇳 选择台湾节点
-      - 🇸🇬 选择新加坡节点
-      - 🇬🇧 选择英国节点
-      - 🇦🇷 选择阿根廷节点
-      - 🇷🇺 选择俄罗斯节点
-      - 🇹🇷 选择土耳其节点
-      - 🇰🇷 选择韩国节点
-      - 🇮🇳 选择印度节点
-      - 🇩🇪 选择德国节点
-      - 🇨🇦 选择加拿大节点
-      - 🇫🇷 选择法国节点
-      - REJECT
-      - DIRECT
-      - temp_1
-      - temp_2
-      - temp_3
-
-  - name: 📲 电报消息
-    type: select
-    proxies:
-      - 🔰 环大陆
-      - 🌏 快速选择代理
-      - 🇭🇰 选择香港节点
-      - 🇺🇲 选择美国节点
-      - 🇯🇵 选择日本节点
-      - 🇦🇺 选择澳大利亚节点
-      - 🇺🇦 选择乌克兰节点
-      - 🇨🇳 选择台湾节点
-      - 🇸🇬 选择新加坡节点
-      - 🇬🇧 选择英国节点
-      - 🇦🇷 选择阿根廷节点
-      - 🇷🇺 选择俄罗斯节点
-      - 🇹🇷 选择土耳其节点
-      - 🇰🇷 选择韩国节点
-      - 🇮🇳 选择印度节点
-      - 🇩🇪 选择德国节点
-      - 🇨🇦 选择加拿大节点
-      - 🇫🇷 选择法国节点
-      - REJECT
-      - DIRECT
-      - temp_1
-      - temp_2
-      - temp_3
-  - name: 🔰 iCloud
-    type: select
-    proxies:
-      - 🌏 快速选择代理
-      - 🇨🇳 选择台湾节点
-      - 🇭🇰 选择香港节点
-      - 🇺🇲 选择美国节点
-      - 🇯🇵 选择日本节点
-      - 🇸🇬 选择新加坡节点
-      - 🇬🇧 选择英国节点
-      - 🇦🇷 选择阿根廷节点
-      - 🇷🇺 选择俄罗斯节点
-      - 🇹🇷 选择土耳其节点
-      - 🇰🇷 选择韩国节点
-      - 🇮🇳 选择印度节点
-      - 🇩🇪 选择德国节点
-      - 🇨🇦 选择加拿大节点
-      - 🇦🇺 选择澳大利亚节点
-      - 🇫🇷 选择法国节点
-      - 🇺🇦 选择乌克兰节点
-      - REJECT
-      - DIRECT
-      - temp_1
-      - temp_2
-      - temp_3
-  - name: 🔰 BING
-    type: select
-    proxies:
-      - DIRECT
-      - 🔰 环大陆
-      - 🌏 快速选择代理
-      - temp_1
-      - temp_2
-      - temp_3
-      - REJECT
-  - name: 🔰 广告
-    type: select
-    proxies:
-      - REJECT
-      - 🌏 快速选择代理
-      - 🔰 环大陆
-      - DIRECT
-      - temp_1
-      - temp_2
-      - temp_3
-  - name: 🔰 国内网站
-    type: select
-    proxies:
-      - DIRECT
-      - REJECT
-      - 🌏 快速选择代理
-      - 🔰 环大陆
-      - temp_1
-      - temp_2
-      - temp_3
-  - name: 🔒 私有网络
-    type: select
-    proxies:
-      - DIRECT
-  - name: 🌏 规则之外
-    type: select
-    proxies:
-      - 🌏 快速选择代理
-      - 🔰 环大陆
-      - REJECT
-      - DIRECT
-      - temp_1
-      - temp_2
-      - temp_3
-  - name: temp_1
-    type: select
-    use:
-      - myclash
-    proxies:
-      - DIRECT
-      - REJECT
-  - name: temp_2
-    type: select
-    use:
-      - myclash
-    proxies:
-      - DIRECT
-      - REJECT
-  - name: temp_3
-    type: select
-    use:
-      - myclash
-    proxies:
-      - DIRECT
-      - REJECT
-  - name: 🇺🇲 选择美国节点
-    type: fallback
-    use:
-      - myclash
-    filter: 美国
-    url: https://cp.cloudflare.com/generate_204
-    interval: 300
-  - name: 🇬🇧 选择英国节点
-    type: fallback
-    use:
-      - myclash
-    filter: 英国
-    url: https://cp.cloudflare.com/generate_204
-    interval: 300
-  - name: 🇫🇷 选择法国节点
-    type: fallback
-    use:
-      - myclash
-    filter: 法国
-    url: https://cp.cloudflare.com/generate_204
-    interval: 300
-  - name: 🇯🇵 选择日本节点
-    type: fallback
-    use:
-      - myclash
-    filter: 日本
-    url: https://cp.cloudflare.com/generate_204
-    interval: 300
-  - name: 🇭🇰 选择香港节点
-    type: fallback
-    use:
-      - myclash
-    filter: 香港
-    url: https://cp.cloudflare.com/generate_204
-    interval: 300
-  - name: 🇨🇳 选择台湾节点
-    type: fallback
-    use:
-      - myclash
-    filter: 台湾
-    url: https://cp.cloudflare.com/generate_204
-    interval: 300
-  - name: 🇸🇬 选择新加坡节点
-    type: fallback
-    use:
-      - myclash
-    filter: 新加坡
-    url: https://cp.cloudflare.com/generate_204
-    interval: 300
-  - name: 🇨🇦 选择加拿大节点
-    type: fallback
-    use:
-      - myclash
-    filter: 加拿大
-    url: https://cp.cloudflare.com/generate_204
-    interval: 300
-  - name: 🇦🇺 选择澳大利亚节点
-    type: fallback
-    use:
-      - myclash
-    filter: 澳大利亚
-    url: https://cp.cloudflare.com/generate_204
-    interval: 300
-  - name: 🇦🇷 选择阿根廷节点
-    type: fallback
-    use:
-      - myclash
-    filter: 阿根廷
-    url: https://cp.cloudflare.com/generate_204
-    interval: 300
-  - name: 🇷🇺 选择俄罗斯节点
-    type: fallback
-    use:
-      - myclash
-    filter: 俄罗斯
-    url: https://cp.cloudflare.com/generate_204
-    interval: 300
-  - name: 🇹🇷 选择土耳其节点
-    type: fallback
-    use:
-      - myclash
-    filter: 土耳其
-    url: https://cp.cloudflare.com/generate_204
-    interval: 300
-  - name: 🇰🇷 选择韩国节点
-    type: fallback
-    use:
-      - myclash
-    filter: 韩国
-    url: https://cp.cloudflare.com/generate_204
-    interval: 300
-  - name: 🇮🇳 选择印度节点
-    type: fallback
-    use:
-      - myclash
-    filter: 印度
-    url: https://cp.cloudflare.com/generate_204
-    interval: 300
-  - name: 🇩🇪 选择德国节点
-    type: fallback
-    use:
-      - myclash
-    filter: 德国
-    url: https://cp.cloudflare.com/generate_204
-    interval: 300
-  - name: 🇺🇦 选择乌克兰节点
-    type: fallback
-    use:
-      - myclash
-    filter: 乌克兰
-    url: https://cp.cloudflare.com/generate_204
-    interval: 300
-  - name: 😊 选择其他国家节点
-    type: fallback
-    use:
-      - myclash
-    exclude-filter: 香港|日本|新加坡|台湾|美国|英国|阿根廷|俄罗斯|土耳其|韩国|印度|德国|加拿大|澳大利亚|法国|乌克兰
-    url: https://cp.cloudflare.com/generate_204
-    interval: 300
+- name: 🌏 快速选择代理
+  type: select
+  proxies:
+  - 🇭🇰 选择香港节点
+  - 🇺🇲 选择美国节点
+  - 🇯🇵 选择日本节点
+  - 🇦🇺 选择澳大利亚节点
+  - 🇺🇦 选择乌克兰节点
+  - 🇨🇳 选择台湾节点
+  - 🇸🇬 选择新加坡节点
+  - 🇬🇧 选择英国节点
+  - 🇦🇷 选择阿根廷节点
+  - 🇷🇺 选择俄罗斯节点
+  - 🇹🇷 选择土耳其节点
+  - 🇰🇷 选择韩国节点
+  - 🇮🇳 选择印度节点
+  - 🇩🇪 选择德国节点
+  - 🇨🇦 选择加拿大节点
+  - 🇫🇷 选择法国节点
+  - REJECT
+  - DIRECT
+  - temp_1
+  - temp_2
+  - temp_3
+- name: 🔰 环大陆
+  type: select
+  proxies:
+  - 🇺🇲 选择美国节点
+  - 🌏 快速选择代理
+  - 🇯🇵 选择日本节点
+  - 🇸🇬 选择新加坡节点
+  - 🇬🇧 选择英国节点
+  - 🇦🇷 选择阿根廷节点
+  - 🇷🇺 选择俄罗斯节点
+  - 🇹🇷 选择土耳其节点
+  - 🇰🇷 选择韩国节点
+  - 🇮🇳 选择印度节点
+  - 🇩🇪 选择德国节点
+  - 🇨🇦 选择加拿大节点
+  - 🇦🇺 选择澳大利亚节点
+  - 🇫🇷 选择法国节点
+  - 🇺🇦 选择乌克兰节点
+  - REJECT
+  - DIRECT
+  - temp_1
+  - temp_2
+  - temp_3
+- name: 🤖 人工智能
+  type: select
+  proxies:
+  - 🔰 环大陆
+  - 🇺🇲 选择美国节点
+  - 🌏 快速选择代理
+  - 🇯🇵 选择日本节点
+  - 🇦🇺 选择澳大利亚节点
+  - 🇺🇦 选择乌克兰节点
+  - 🇸🇬 选择新加坡节点
+  - 🇬🇧 选择英国节点
+  - 🇦🇷 选择阿根廷节点
+  - 🇷🇺 选择俄罗斯节点
+  - 🇹🇷 选择土耳其节点
+  - 🇰🇷 选择韩国节点
+  - 🇮🇳 选择印度节点
+  - 🇩🇪 选择德国节点
+  - 🇨🇦 选择加拿大节点
+  - 🇫🇷 选择法国节点
+  - 🇭🇰 选择香港节点
+  - 🇨🇳 选择台湾节点
+  - REJECT
+  - DIRECT
+  - temp_1
+  - temp_2
+  - temp_3
+- name: 📈 网络测试
+  type: select
+  proxies:
+  - 🌏 快速选择代理
+  - 🔰 环大陆
+  - 🍎 苹果服务
+  - 🤖 人工智能
+  - 🇬 谷歌服务
+  - 🎮 游戏服务
+  - 🎥 流媒体
+  - REJECT
+  - DIRECT
+  - temp_1
+  - temp_2
+  - temp_3
+- name: 🍎 苹果服务
+  type: select
+  proxies:
+  - DIRECT
+  - 🌏 快速选择代理
+  - 🔰 环大陆
+  - 🇭🇰 选择香港节点
+  - 🇺🇲 选择美国节点
+  - 🇯🇵 选择日本节点
+  - 🇦🇺 选择澳大利亚节点
+  - 🇺🇦 选择乌克兰节点
+  - 🇨🇳 选择台湾节点
+  - 🇸🇬 选择新加坡节点
+  - 🇬🇧 选择英国节点
+  - 🇦🇷 选择阿根廷节点
+  - 🇷🇺 选择俄罗斯节点
+  - 🇹🇷 选择土耳其节点
+  - 🇰🇷 选择韩国节点
+  - 🇮🇳 选择印度节点
+  - 🇩🇪 选择德国节点
+  - 🇨🇦 选择加拿大节点
+  - 🇫🇷 选择法国节点
+  - REJECT
+  - DIRECT
+  - temp_1
+  - temp_2
+  - temp_3
+- name: 🇬 谷歌服务
+  type: select
+  proxies:
+  - 🔰 环大陆
+  - 🌏 快速选择代理
+  - 🇭🇰 选择香港节点
+  - 🇺🇲 选择美国节点
+  - 🇯🇵 选择日本节点
+  - 🇦🇺 选择澳大利亚节点
+  - 🇺🇦 选择乌克兰节点
+  - 🇨🇳 选择台湾节点
+  - 🇸🇬 选择新加坡节点
+  - 🇬🇧 选择英国节点
+  - 🇦🇷 选择阿根廷节点
+  - 🇷🇺 选择俄罗斯节点
+  - 🇹🇷 选择土耳其节点
+  - 🇰🇷 选择韩国节点
+  - 🇮🇳 选择印度节点
+  - 🇩🇪 选择德国节点
+  - 🇨🇦 选择加拿大节点
+  - 🇫🇷 选择法国节点
+  - REJECT
+  - DIRECT
+  - temp_1
+  - temp_2
+  - temp_3
+- name: 🎮 游戏服务
+  type: select
+  proxies:
+  - 🌏 快速选择代理
+  - DIRECT
+  - 🔰 环大陆
+  - 🇭🇰 选择香港节点
+  - 🇺🇲 选择美国节点
+  - 🇯🇵 选择日本节点
+  - 🇦🇺 选择澳大利亚节点
+  - 🇺🇦 选择乌克兰节点
+  - 🇨🇳 选择台湾节点
+  - 🇸🇬 选择新加坡节点
+  - 🇬🇧 选择英国节点
+  - 🇦🇷 选择阿根廷节点
+  - 🇷🇺 选择俄罗斯节点
+  - 🇹🇷 选择土耳其节点
+  - 🇰🇷 选择韩国节点
+  - 🇮🇳 选择印度节点
+  - 🇩🇪 选择德国节点
+  - 🇨🇦 选择加拿大节点
+  - 🇫🇷 选择法国节点
+  - REJECT
+  - temp_1
+  - temp_2
+  - temp_3
+  - DIRECT
+- name: 🎥 流媒体
+  type: select
+  proxies:
+  - 🔰 环大陆
+  - 🌏 快速选择代理
+  - 🇭🇰 选择香港节点
+  - 🇺🇲 选择美国节点
+  - 🇯🇵 选择日本节点
+  - 🇦🇺 选择澳大利亚节点
+  - 🇺🇦 选择乌克兰节点
+  - 🇨🇳 选择台湾节点
+  - 🇸🇬 选择新加坡节点
+  - 🇬🇧 选择英国节点
+  - 🇦🇷 选择阿根廷节点
+  - 🇷🇺 选择俄罗斯节点
+  - 🇹🇷 选择土耳其节点
+  - 🇰🇷 选择韩国节点
+  - 🇮🇳 选择印度节点
+  - 🇩🇪 选择德国节点
+  - 🇨🇦 选择加拿大节点
+  - 🇫🇷 选择法国节点
+  - REJECT
+  - DIRECT
+  - temp_1
+  - temp_2
+  - temp_3
+- name: 📲 电报消息
+  type: select
+  proxies:
+  - 🔰 环大陆
+  - 🌏 快速选择代理
+  - 🇭🇰 选择香港节点
+  - 🇺🇲 选择美国节点
+  - 🇯🇵 选择日本节点
+  - 🇦🇺 选择澳大利亚节点
+  - 🇺🇦 选择乌克兰节点
+  - 🇨🇳 选择台湾节点
+  - 🇸🇬 选择新加坡节点
+  - 🇬🇧 选择英国节点
+  - 🇦🇷 选择阿根廷节点
+  - 🇷🇺 选择俄罗斯节点
+  - 🇹🇷 选择土耳其节点
+  - 🇰🇷 选择韩国节点
+  - 🇮🇳 选择印度节点
+  - 🇩🇪 选择德国节点
+  - 🇨🇦 选择加拿大节点
+  - 🇫🇷 选择法国节点
+  - REJECT
+  - DIRECT
+  - temp_1
+  - temp_2
+  - temp_3
+- name: 🔰 iCloud
+  type: select
+  proxies:
+  - 🌏 快速选择代理
+  - 🇨🇳 选择台湾节点
+  - 🇭🇰 选择香港节点
+  - 🇺🇲 选择美国节点
+  - 🇯🇵 选择日本节点
+  - 🇸🇬 选择新加坡节点
+  - 🇬🇧 选择英国节点
+  - 🇦🇷 选择阿根廷节点
+  - 🇷🇺 选择俄罗斯节点
+  - 🇹🇷 选择土耳其节点
+  - 🇰🇷 选择韩国节点
+  - 🇮🇳 选择印度节点
+  - 🇩🇪 选择德国节点
+  - 🇨🇦 选择加拿大节点
+  - 🇦🇺 选择澳大利亚节点
+  - 🇫🇷 选择法国节点
+  - 🇺🇦 选择乌克兰节点
+  - REJECT
+  - DIRECT
+  - temp_1
+  - temp_2
+  - temp_3
+- name: 🔰 BING
+  type: select
+  proxies:
+  - DIRECT
+  - 🔰 环大陆
+  - 🌏 快速选择代理
+  - temp_1
+  - temp_2
+  - temp_3
+  - REJECT
+- name: 🔰 广告
+  type: select
+  proxies:
+  - REJECT
+  - 🌏 快速选择代理
+  - 🔰 环大陆
+  - DIRECT
+  - temp_1
+  - temp_2
+  - temp_3
+- name: 🔰 国内网站
+  type: select
+  proxies:
+  - DIRECT
+  - REJECT
+  - 🌏 快速选择代理
+  - 🔰 环大陆
+  - temp_1
+  - temp_2
+  - temp_3
+- name: 🔒 私有网络
+  type: select
+  proxies:
+  - DIRECT
+- name: 🌏 规则之外
+  type: select
+  proxies:
+  - 🌏 快速选择代理
+  - 🔰 环大陆
+  - REJECT
+  - DIRECT
+  - temp_1
+  - temp_2
+  - temp_3
+- name: temp_1
+  type: select
+  use:
+  - myclash
+  proxies:
+  - DIRECT
+  - REJECT
+- name: temp_2
+  type: select
+  use:
+  - myclash
+  proxies:
+  - DIRECT
+  - REJECT
+- name: temp_3
+  type: select
+  use:
+  - myclash
+  proxies:
+  - DIRECT
+  - REJECT
+- name: 🇺🇲 选择美国节点
+  type: fallback
+  use:
+  - myclash
+  filter: 美国
+  url: https://cp.cloudflare.com/generate_204
+  interval: 300
+- name: 🇬🇧 选择英国节点
+  type: fallback
+  use:
+  - myclash
+  filter: 英国
+  url: https://cp.cloudflare.com/generate_204
+  interval: 300
+- name: 🇫🇷 选择法国节点
+  type: fallback
+  use:
+  - myclash
+  filter: 法国
+  url: https://cp.cloudflare.com/generate_204
+  interval: 300
+- name: 🇯🇵 选择日本节点
+  type: fallback
+  use:
+  - myclash
+  filter: 日本
+  url: https://cp.cloudflare.com/generate_204
+  interval: 300
+- name: 🇭🇰 选择香港节点
+  type: fallback
+  use:
+  - myclash
+  filter: 香港
+  url: https://cp.cloudflare.com/generate_204
+  interval: 300
+- name: 🇨🇳 选择台湾节点
+  type: fallback
+  use:
+  - myclash
+  filter: 台湾
+  url: https://cp.cloudflare.com/generate_204
+  interval: 300
+- name: 🇸🇬 选择新加坡节点
+  type: fallback
+  use:
+  - myclash
+  filter: 新加坡
+  url: https://cp.cloudflare.com/generate_204
+  interval: 300
+- name: 🇨🇦 选择加拿大节点
+  type: fallback
+  use:
+  - myclash
+  filter: 加拿大
+  url: https://cp.cloudflare.com/generate_204
+  interval: 300
+- name: 🇦🇺 选择澳大利亚节点
+  type: fallback
+  use:
+  - myclash
+  filter: 澳大利亚
+  url: https://cp.cloudflare.com/generate_204
+  interval: 300
+- name: 🇦🇷 选择阿根廷节点
+  type: fallback
+  use:
+  - myclash
+  filter: 阿根廷
+  url: https://cp.cloudflare.com/generate_204
+  interval: 300
+- name: 🇷🇺 选择俄罗斯节点
+  type: fallback
+  use:
+  - myclash
+  filter: 俄罗斯
+  url: https://cp.cloudflare.com/generate_204
+  interval: 300
+- name: 🇹🇷 选择土耳其节点
+  type: fallback
+  use:
+  - myclash
+  filter: 土耳其
+  url: https://cp.cloudflare.com/generate_204
+  interval: 300
+- name: 🇰🇷 选择韩国节点
+  type: fallback
+  use:
+  - myclash
+  filter: 韩国
+  url: https://cp.cloudflare.com/generate_204
+  interval: 300
+- name: 🇮🇳 选择印度节点
+  type: fallback
+  use:
+  - myclash
+  filter: 印度
+  url: https://cp.cloudflare.com/generate_204
+  interval: 300
+- name: 🇩🇪 选择德国节点
+  type: fallback
+  use:
+  - myclash
+  filter: 德国
+  url: https://cp.cloudflare.com/generate_204
+  interval: 300
+- name: 🇺🇦 选择乌克兰节点
+  type: fallback
+  use:
+  - myclash
+  filter: 乌克兰
+  url: https://cp.cloudflare.com/generate_204
+  interval: 300
+- name: 😊 选择其他国家节点
+  type: fallback
+  use:
+  - myclash
+  exclude-filter: 香港|日本|新加坡|台湾|美国|英国|阿根廷|俄罗斯|土耳其|韩国|印度|德国|加拿大|澳大利亚|法国|乌克兰
+  url: https://cp.cloudflare.com/generate_204
+  interval: 300
 rule-providers:
   reject:
     type: http
@@ -710,38 +702,37 @@ rule-providers:
     path: ./ruleset/magicnet/direct.yaml
     interval: 86400
 rules:
-  - RULE-SET,lancidr,DIRECT
-  - RULE-SET,private,DIRECT
-  - RULE-SET,mndirect,DIRECT
-  - RULE-SET,mnban,REJECT
-  - RULE-SET,reject,🔰 广告
-  - GEOSITE,ads,🔰 广告
-  - GEOSITE,private,DIRECT
-  - IP-CIDR,127.0.0.1/32,REJECT,no-resolve
-  - IP-CIDR,198.18.0.1/16,REJECT,no-resolve
-  - IP-CIDR,28.0.0.1/8,REJECT,no-resolve
-  - IP-CIDR6,::1/128,REJECT,no-resolve
-  - AND,((NETWORK,TCP),(DST-PORT,5228-5230)),DIRECT
-  - AND,((NETWORK,TCP),(DST-PORT,5228-5230),(OR,((DOMAIN-KEYWORD,google)))),DIRECT
-  - AND,((NETWORK,UDP),(DST-PORT,123)),DIRECT
-  - DST-PORT,123/136/137-139,DIRECT,udp
-  - GEOSITE,ai,🔰 环大陆
-  - RULE-SET,google,🔰 环大陆
-  - RULE-SET,proxy,🔰 环大陆
-  - GEOSITE,networktest,📈 网络测试
-  - RULE-SET,telegramcidr,📲 电报消息
-  - RULE-SET,icloud,🔰 iCloud
-  - RULE-SET,bing,🔰 BING
-  - GEOSITE,games,🎮 游戏服务
-  - GEOSITE,media,🎥 流媒体
-  - GEOSITE,apple-cn,🍎 苹果服务
-  - RULE-SET,apple,🍎 苹果服务
-  - GEOSITE,google-cn,🇬 谷歌服务
-  - RULE-SET,applications,🔰 国内网站
-  - RULE-SET,direct,🔰 国内网站
-  - RULE-SET,cncidr,🔰 国内网站
-  - GEOSITE,cn,🔰 国内网站
-  - DOMAIN-SUFFIX,o33249.ingest.sentry.io,REJECT
-  - DOMAIN-SUFFIX,openaicom.imgix.net,REJECT
-
-  - MATCH,🌏 规则之外
+- RULE-SET,lancidr,DIRECT
+- RULE-SET,private,DIRECT
+- RULE-SET,mndirect,DIRECT
+- RULE-SET,mnban,REJECT
+- RULE-SET,reject,🔰 广告
+- GEOSITE,ads,🔰 广告
+- GEOSITE,private,DIRECT
+- IP-CIDR,127.0.0.1/32,REJECT,no-resolve
+- IP-CIDR,198.18.0.1/16,REJECT,no-resolve
+- IP-CIDR,28.0.0.1/8,REJECT,no-resolve
+- IP-CIDR6,::1/128,REJECT,no-resolve
+- AND,((NETWORK,TCP),(DST-PORT,5228-5230)),DIRECT
+- AND,((NETWORK,TCP),(DST-PORT,5228-5230),(OR,((DOMAIN-KEYWORD,google)))),DIRECT
+- AND,((NETWORK,UDP),(DST-PORT,123)),DIRECT
+- DST-PORT,123/136/137-139,DIRECT,udp
+- GEOSITE,ai,🔰 环大陆
+- RULE-SET,google,🔰 环大陆
+- RULE-SET,proxy,🔰 环大陆
+- GEOSITE,networktest,📈 网络测试
+- RULE-SET,telegramcidr,📲 电报消息
+- RULE-SET,icloud,🔰 iCloud
+- RULE-SET,bing,🔰 BING
+- GEOSITE,games,🎮 游戏服务
+- GEOSITE,media,🎥 流媒体
+- GEOSITE,apple-cn,🍎 苹果服务
+- RULE-SET,apple,🍎 苹果服务
+- GEOSITE,google-cn,🇬 谷歌服务
+- RULE-SET,applications,🔰 国内网站
+- RULE-SET,direct,🔰 国内网站
+- RULE-SET,cncidr,🔰 国内网站
+- GEOSITE,cn,🔰 国内网站
+- DOMAIN-SUFFIX,o33249.ingest.sentry.io,REJECT
+- DOMAIN-SUFFIX,openaicom.imgix.net,REJECT
+- MATCH,🌏 规则之外

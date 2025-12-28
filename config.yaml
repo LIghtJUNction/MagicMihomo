@@ -1,13 +1,382 @@
-proxy-providers:
-  myclash:
+proxy-provider-templates:
+  premium-http: &PREMIUM_HTTP_DEFAULTS
     type: http
-    path: ./myclash.yaml
-    url: https://github.nodebest.xyz/clash-nodes-subscription-a/2025/12/update-202512.yaml
     interval: 3600
     health-check:
       enable: true
       url: http://www.gstatic.com/generate_204
-      interval: 3600
+      interval: 300
+  free-http: &FREE_HTTP_DEFAULTS
+    type: http
+    interval: 3600
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 600
+proxy-providers:
+  premium_a:
+    <<: *PREMIUM_HTTP_DEFAULTS
+    path: ./proxies/A.yaml
+    url: "https://A"
+  premium_b:
+    <<: *PREMIUM_HTTP_DEFAULTS
+    path: ./proxies/B.yaml
+    url: "https://B"
+  premium_c:
+    <<: *PREMIUM_HTTP_DEFAULTS
+    path: ./proxies/C.yaml
+    url: "https://C"
+  free_a: # https://github.com/Barabama/FreeNodes
+    <<: *FREE_HTTP_DEFAULTS
+    path: ./proxies/a.yaml
+    url: "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/nodefree.yaml"
+  free_b:
+    <<: *FREE_HTTP_DEFAULTS
+    path: ./proxies/b.yaml
+    url: "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/v2rayshare.yaml"
+  free_c:
+    <<: *FREE_HTTP_DEFAULTS
+    path: ./proxies/c.yaml
+    url: "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/wenode.yaml"
+  free_d:
+    <<: *FREE_HTTP_DEFAULTS
+    path: ./proxies/d.yaml
+    url: "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/nodev2ray.yaml"
+  free_e:
+    <<: *FREE_HTTP_DEFAULTS
+    path: ./proxies/e.yaml
+    url: "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/ndnode.yaml"
+dns:
+  enable: true
+  listen: 0.0.0.0:1053
+  ipv6: true
+  use-hosts: true
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  cache-algorithm: arc
+  prefer-h3: true # 大部分主流DoH已全面支持HTTP/3
+  fake-ip-filter:
+    - "+.lan"
+    - "+.local"
+    - "geosite:private"
+    - "geosite:cn" # 如果你希望国内域名返回真实IP，取消此行注释
+    - "+.stun.*"
+    - "lens.l.google.com" # 修复Google Lens冲突
+  default-nameserver: # 基础解析服务器：用于解析 DoH/DoT 的域名
+    - 223.5.5.5
+    - 119.29.29.29
+  nameserver: # 默认解析服务器：当 nameserver-policy 未匹配时使用
+    - 1.1.1.1🌏 快速选择代理
+    - 8.8.8.8🌏 快速选择代理
+  nameserver-policy: # 国内域名使用国内 DoH，不走代理
+    "geosite:cn,private,apple":
+      - 223.5.5.5
+      - doh.pub
+    "geosite:geolocation-!cn": # 强制指定某些域名走特定代理节点的 DNS（可选）
+      - dns.google🌏 快速选择代理
+      - 1.1.1.1🌏 快速选择代理
+tun:
+  enable: true
+  stack: mixed # 推荐使用 mixed 或 gvisor，性能优于 system
+  device: utun
+  mtu: 1500 # 恢复为标准值，避免部分网站无法访问 (MTU 9000 仅限纯内网环境)
+  auto-route: true # 自动接管系统流量
+  auto-detect-interface: true # 自动选择主出口网卡
+  strict-route: true # 开启后可防止流量绕过代理
+  endpoint-independent-nat: true # 开启独立于端点的 NAT (锥形 NAT)，对游戏/P2P 非常友好
+  dns-hijack: # DNS 劫持配置
+    - "any:53" # 简化写法，劫持所有 53 端口流量
+    - "tcp://any:53"
+  inet4-route-exclude-address: # 排除本地网段 (保留 192.168.x.x 等，确保局域网设备互访)
+    - 192.168.0.0/16
+    - 10.0.0.0/8
+    - 172.16.0.0/12
+sniffer:
+  enable: true
+  parse-pure-ip: true # 建议开启：处理纯 IP 流量时尝试还原域名
+  force-dns-mapping: true # 建议开启：配合 fake-ip 提高域名还原准确率
+  override-destination: true # 全局覆盖目标地址
+  sniff:
+    TLS: # TLS 嗅探 (HTTPS)
+      ports: [443, 8443]
+    HTTP: # HTTP 嗅探
+      ports: [80, 8080-8880]
+      override-destination: true # HTTP 强制覆盖
+    QUIC: # QUIC 嗅探 (针对 YouTube/Google 优化)
+      ports: [443]
+  force-domain: # 强制进行域名解析还原的域名
+    - "+" # 对所有能嗅探到的流量执行还原，确保规则匹配最准
+  skip-domain: # 跳过嗅探的域名 (避免某些加密连接因嗅探握手失败)
+    - "Mijia Cloud"
+    - "+.apple.com"
+    - "geosite:apple" # 推荐使用 geosite 写法
+    - "geosite:private"
+profile:
+  store-selected: true
+  store-fake-ip: true
+ntp:
+  enable: true
+  write-to-system: false # 除非是作为路由器固件运行，否则建议保持 false
+  server: time.apple.com
+  port: 123
+  interval: 300 #间隔调大至 300s (5分钟)，减少无意义的请求，30s 太频繁了
+  server-list:
+    - time.apple.com
+    - time.cloudflare.com
+    - ntp.aliyun.com
+    - pool.ntp.org
+geox-url:
+  geoip: https://github.com/DustinWin/ruleset_geodata/releases/download/clash/geoip-all.dat
+  geosite: https://github.com/DustinWin/ruleset_geodata/releases/download/clash/geosite-all.dat
+  mmdb: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-geodata/Country-all.mmdb
+proxies: null
+providers-default: # use: *ALL_PROVIDERS
+  premium: &PREMIUM_PROVIDERS
+    - premium_a # 付费订阅链接a
+    - premium_b # 付费订阅链接b
+    - premium_c # 付费订阅链接c
+  free: &FREE_PROVIDERS
+    - free_a # 免费订阅链接a
+    - free_b # 免费订阅链接b
+    - free_c # 免费订阅链接c
+    - free_d # 免费订阅链接d
+    - free_e # 免费订阅链接e
+  buildin: &BUILDIN_PROVIDERS
+    - DIRECT
+    - REJECT
+  all_providers: &ALL_PROVIDERS
+    - premium_a # 付费订阅链接a
+    - premium_b # 付费订阅链接b
+    - premium_c # 付费订阅链接c
+    - free_a # 免费订阅链接a
+    - free_b # 免费订阅链接b
+    - free_c # 免费订阅链接c
+    - free_d # 免费订阅链接d
+    - free_e # 免费订阅链接e
+    - DIRECT
+    - REJECT
+proxy-groups-defaults: # 代理组默认值
+  proxies: &PROXIES
+    - 🇺🇲 选择美国节点
+    - 🇯🇵 选择日本节点
+    - 🇭🇰 选择香港节点
+    - 🇭🇰 选择台湾节点
+    - 😊 选择其他国家节点
+    - DIRECT
+    - REJECT
+  # 不支持数组展开只能这样了
+  proxies-more: &PROXIES-MORE
+    - 🌏 快速选择代理
+    - 🇺🇲 选择美国节点
+    - 🇯🇵 选择日本节点
+    - 🇭🇰 选择香港节点
+    - 🇭🇰 选择台湾节点
+    - 😊 选择其他国家节点
+    - DIRECT
+    - REJECT
+  proxies-direct-default: &PROXIES_DIRECT_DEFAULT
+    - DIRECT
+    - 🌏 快速选择代理
+    - 🇺🇲 选择美国节点
+    - 🇯🇵 选择日本节点
+    - 🇭🇰 选择香港节点
+    - 🇭🇰 选择台湾节点
+    - 😊 选择其他国家节点
+    - REJECT
+  proxies-reject-default: &PROXIES_REJECT_DEFAULT
+    - REJECT
+    - DIRECT
+    - 🌏 快速选择代理
+    - 🇺🇲 选择美国节点
+    - 🇯🇵 选择日本节点
+    - 🇭🇰 选择香港节点
+    - 🇭🇰 选择台湾节点
+    - 😊 选择其他国家节点
+  proxies-group-defaults: &PROXIES_GROUP_DEFAULTS
+    type: select
+    use: *ALL_PROVIDERS
+    proxies: *PROXIES
+  proxies-group-more: &PROXIES_GROUP_MORE
+    <<: *PROXIES_GROUP_DEFAULTS
+    proxies: *PROXIES-MORE
+  proxies-group-more-direct: &PROXIES_GROUP_MORE_DIRECT
+    <<: *PROXIES_GROUP_DEFAULTS
+    proxies: *PROXIES_DIRECT_DEFAULT
+  proxies-group-more-reject: &PROXIES_GROUP_MORE_REJECT
+    <<: *PROXIES_GROUP_DEFAULTS
+    proxies: *PROXIES_REJECT_DEFAULT
+  proxies-group-urltest: &URLTEST_DEFAULTS
+    type: url-test
+    use: *ALL_PROVIDERS
+    url: https://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 50
+    lazy: true
+  proxies-group-fallback: &FALLBACK_DEFAULTS
+    type: fallback
+    use: *ALL_PROVIDERS
+    url: https://cp.cloudflare.com/generate_204
+    interval: 300
+proxy-groups:
+  - name: 🌏 快速选择代理
+    <<: *PROXIES_GROUP_DEFAULTS
+  - name: 🔰 环大陆 # 默认：🌏 快速选择代理
+    <<: *PROXIES_GROUP_MORE
+  - name: 🤖 人工智能 # 默认：🌏 快速选择代理
+    <<: *PROXIES_GROUP_MORE
+  - name: 📈 网络测试 # 默认：🌏 快速选择代理
+    <<: *PROXIES_GROUP_MORE
+  - name: 🍎 苹果服务 # 默认：🌏 快速选择代理
+    <<: *PROXIES_GROUP_MORE
+  - name: 🇬 谷歌服务 # 默认：🌏 快速选择代理
+    <<: *PROXIES_GROUP_MORE
+  - name: 🎮 游戏服务 # 默认：🌏 快速选择代理
+    <<: *PROXIES_GROUP_MORE
+  - name: 🎥 流媒体 # 默认：🌏 快速选择代理
+    <<: *PROXIES_GROUP_MORE
+  - name: 📲 电报消息 # 默认：🌏 快速选择代理
+    <<: *PROXIES_GROUP_MORE
+  - name: 🔰 iCloud # 默认：🌏 快速选择代理
+    <<: *PROXIES_GROUP_MORE
+  - name: 🔰 BING # 默认：🌏 快速选择代理
+    <<: *PROXIES_GROUP_MORE
+  - name: 🔰 广告 # 默认：REJECT
+    <<: *PROXIES_GROUP_MORE_REJECT
+  - name: 🔰 国内网站 # 默认：DIRECT
+    <<: *PROXIES_GROUP_MORE_DIRECT
+  - name: 🔒 私有网络 # 默认：DIRECT
+    <<: *PROXIES_GROUP_MORE_DIRECT
+  - name: 🌏 规则之外 # 默认：🌏 快速选择代理
+    <<: *PROXIES_GROUP_MORE
+  # 国家/地区分组(坚持一个中国原则，台湾属于地区)
+  - name: 🇺🇲 选择美国节点
+    <<: *PROXIES_GROUP_MORE
+    filter: "(?i)美国|US|USA|United States|America"
+  - name: 🇯🇵 选择日本节点
+    <<: *URLTEST_DEFAULTS
+    filter: "(?i)日本|JP|Japan|Tokyo"
+  - name: 🇭🇰 选择香港节点
+    <<: *URLTEST_DEFAULTS
+    filter: "(?i)香港|HK|Hong Kong"
+  - name: 🇭🇰 选择台湾节点
+    <<: *URLTEST_DEFAULTS
+    filter: "(?i)台湾|TW|Taiwan"
+  - name: 😊 选择其他国家节点
+    <<: *FALLBACK_DEFAULTS
+    exclude-filter: "(?i)美国|US|USA|United States|America|日本|JP|Japan|Tokyo|香港|HK|Hong Kong|台湾|TW|Taiwan"
+rule-providers-default:
+  http: &HTTP_DEFAULTS
+    type: http
+    behavior: domain
+    interval: 86400
+rule-providers:
+  reject:
+    <<: *HTTP_DEFAULTS
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt
+    path: ./ruleset/reject.yaml
+  icloud:
+    <<: *HTTP_DEFAULTS
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.txt
+    path: ./ruleset/icloud.yaml
+  apple:
+    <<: *HTTP_DEFAULTS
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt
+    path: ./ruleset/apple.yaml
+  google:
+    <<: *HTTP_DEFAULTS
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt
+    path: ./ruleset/google.yaml
+  proxy:
+    <<: *HTTP_DEFAULTS
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt
+    path: ./ruleset/proxy.yaml
+  direct:
+    <<: *HTTP_DEFAULTS
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt
+    path: ./ruleset/direct.yaml
+  private:
+    <<: *HTTP_DEFAULTS
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt
+    path: ./ruleset/private.yaml
+  gfw:
+    <<: *HTTP_DEFAULTS
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/gfw.txt
+    path: ./ruleset/gfw.yaml
+  tld-not-cn:
+    <<: *HTTP_DEFAULTS
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/tld-not-cn.txt
+    path: ./ruleset/tld-not-cn.yaml
+  telegramcidr:
+    <<: *HTTP_DEFAULTS
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt
+    path: ./ruleset/telegramcidr.yaml
+  cncidr:
+    <<: *HTTP_DEFAULTS
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt
+    path: ./ruleset/cncidr.yaml
+  lancidr:
+    <<: *HTTP_DEFAULTS
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt
+    path: ./ruleset/lancidr.yaml
+  applications:
+    <<: *HTTP_DEFAULTS
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/applications.txt
+    path: ./ruleset/applications.yaml
+  bing:
+    <<: *HTTP_DEFAULTS
+    url: https://rules.xkww3n.cyou/yaml/bing.yaml
+    path: ./ruleset/bing.yaml
+  mnban:
+    <<: *HTTP_DEFAULTS
+    url: https://raw.githubusercontent.com/LIghtJUNction/MagicMihomo/main/ruleset/magicnet/ban.yaml
+    path: ./ruleset/magicnet/ban.yaml
+  mndirect:
+    <<: *HTTP_DEFAULTS
+    url: https://raw.githubusercontent.com/LIghtJUNction/MagicMihomo/main/ruleset/magicnet/direct.yaml
+    path: ./ruleset/magicnet/direct.yaml
+rules:
+  # 1) 本地 / 特殊 IP（尽早拒绝或处理）
+  - IP-CIDR,127.0.0.1/32,REJECT,no-resolve
+  - IP-CIDR6,::1/128,REJECT,no-resolve
+  - IP-CIDR,198.18.0.1/16,REJECT,no-resolve
+  - IP-CIDR,28.0.0.0/8,REJECT,no-resolve # 建议确认是否改为 .0/8
+  # 2) 拦截类（ban / 广告）优先：尽早过滤掉不需要的域名
+  - RULE-SET,mnban,REJECT
+  - RULE-SET,reject,🔰 广告
+  - GEOSITE,ads,🔰 广告
+  # 3) 局域网 / 私有 / 专用直连
+  - RULE-SET,lancidr,DIRECT
+  - RULE-SET,private,DIRECT
+  - GEOSITE,private,DIRECT
+  - RULE-SET,cncidr,🔰 国内网站
+  # 4) 端口/协议相关的直接转发（非常具体，应靠前）
+  - AND,((NETWORK,TCP),(DST-PORT,5228-5230)),DIRECT
+  - AND,((NETWORK,TCP),(DST-PORT,5228-5230),(OR,((DOMAIN-KEYWORD,google)))),DIRECT
+  - AND,((NETWORK,UDP),(DST-PORT,123)),DIRECT
+  - AND,((NETWORK,UDP),(DST-PORT,136)),DIRECT
+  - AND,((NETWORK,UDP),(DST-PORT,137-139)),DIRECT
+  # 5) 服务/国家/分流相关（按优先级分组）
+  - RULE-SET,mndirect,DIRECT
+  - GEOSITE,cn,🔰 国内网站
+  - RULE-SET,direct,🔰 国内网站
+  - GEOSITE,apple-cn,🍎 苹果服务
+  - RULE-SET,apple,🍎 苹果服务
+  - RULE-SET,icloud,🔰 iCloud
+  - RULE-SET,telegramcidr,📲 电报消息
+  - RULE-SET,google,🔰 环大陆
+  - GEOSITE,ai,🔰 环大陆
+  - RULE-SET,proxy,🔰 环大陆
+  - GEOSITE,games,🎮 游戏服务
+  - GEOSITE,media,🎥 流媒体
+  - RULE-SET,bing,🔰 BING
+  - RULE-SET,applications,🔰 国内网站
+  - GEOSITE,networktest,📈 网络测试
+  # 6) 特定域名的强制规则（写在靠后，但在 MATCH 前）
+  - DOMAIN-SUFFIX,o33249.ingest.sentry.io,REJECT
+  - DOMAIN-SUFFIX,openaicom.imgix.net,REJECT
+  # 7) 兜底
+  - MATCH,🌏 规则之外
+
 port: 7890
 socks-port: 7891
 mixed-port: 7892
@@ -30,709 +399,14 @@ log-level: error
 global-client-fingerprint: random
 geodata-loader: standard
 find-process-mode: strict
-bind-address: '*'
+bind-address: "*"
 hosts:
   time.facebook.com: 17.253.84.125
   time.android.com: 17.253.84.125
-  '*.mihomo.dev': 127.0.0.1
+  "*.mihomo.dev": 127.0.0.1
   .dev: 127.0.0.1
   alpha.mihomo.dev: ::1
   test.com:
-  - 1.1.1.1
-  - 2.2.2.2
+    - 1.1.1.1
+    - 2.2.2.2
   home.lan: lan
-dns:
-  cache-algorithm: arc
-  enable: true
-  listen: 0.0.0.0:1053
-  use-hosts: true
-  ipv6: true
-  ipv6-timeout: 300
-  prefer-h3: true
-  enhanced-mode: fake-ip
-  fake-ip-range: 198.18.0.1/16
-  fake-ip-filter:
-  - '*'
-  - +.lan
-  - +.local
-  - +.leigod.com
-  - +.vivox.com
-  - +.stun.+
-  - .n.n.srv.nintendo.net
-  - +.stun.playstation.net
-  - xbox.*.*.microsoft.com
-  - '*.*.xboxlive.com'
-  - lens.l.google.com
-  - '*.mcdn.bilivideo.cn'
-  - localhost.ptlogin2.qq.com
-  - WORKGROUP
-  nameserver:
-  - quic://dns.adguard.com:784#🌏 快速选择代理
-  - https://1.1.1.1/dns-query#🌏 快速选择代理
-  - https://1.0.0.1/dns-query#🌏 快速选择代理
-  - tls://223.5.5.5:853#🌏 快速选择代理
-  - https://doh.pub/dns-query#🌏 快速选择代理
-  - https://dns.alidns.com/dns-query#🌏 快速选择代理&h3=true
-  - https://mozilla.cloudflare-dns.com/dns-query#🌏 快速选择代理&h3=true
-  - dhcp://en0#🌏 快速选择代理
-  default-nameserver:
-  - tls://1.12.12.12:853
-  - tls://223.5.5.5:853
-  - https://223.5.5.5/dns-query
-  - tcp://119.29.29.29
-  - tcp://223.6.6.6
-  - system
-  nameserver-policy:
-    geosite:cn,private:
-    - https://223.5.5.5/dns-query
-    - https://doh.pub/dns-query
-    - https://doh.360.cn/dns-query
-    - tls://223.5.5.5
-    - tls://dot.pub
-    rule-set:direct,private,apple,icloud:
-    - https://223.5.5.5/dns-query
-    - https://doh.pub/dns-query
-    - https://doh.360.cn/dns-query
-    - tls://223.5.5.5
-    - tls://dot.pub
-  proxy-server-nameserver:
-  - https://doh.pub/dns-query
-  - https://doh.360.cn/dns-query
-  - tls://223.5.5.5
-  - tls://dot.pub
-  fallback:
-  - quic://a.passcloud.xyz:784#🌏 快速选择代理
-  - tls://8.8.4.4:853#🌏 快速选择代理
-  - tcp://1.1.1.1#🌏 快速选择代理
-  - https://1.1.1.1/dns-query#🌏 快速选择代理&h3=true
-  - https://1.0.0.1/dns-query#🌏 快速选择代理
-  - tls://1dot1dot1dot1.cloudflare-dns.com#🌏 快速选择代理
-tun:
-  enable: true
-  device: utun
-  mtu: 9000
-  stack: system
-  dns-hijack:
-  - udp://any:53
-  - tcp://any:53
-  auto-route: true
-  auto-detect-interface: true
-  endpoint-independent-nat: false
-  inet4-route-exclude-address:
-  - 192.168.0.0/16
-  inet6-route-exclude-address:
-  - fc00::/7
-  inet4-route-address:
-  - 0.0.0.0/1
-  - 128.0.0.0/1
-  inet6-route-address:
-  - ::/1
-  - 8000::/1
-  include_android_user:
-  - 0
-sniffer:
-  enable: true
-  force-dns-mapping: false
-  parse-pure-ip: false
-  override-destination: false
-  sniff:
-    TLS:
-      ports:
-      - 443
-      - 8443
-    QUIC:
-      ports:
-      - 443
-    HTTP:
-      ports:
-      - 80
-      - 8080-8880
-      override-destination: true
-  force-domain:
-  - google.com
-  - +.v2ex.com
-  skip-domain:
-  - Mijia Cloud
-  - +.apple.com
-  sniffing:
-  - tls
-  - http
-  port-whitelist:
-  - '80'
-  - '443'
-profile:
-  store-selected: true
-  store-fake-ip: true
-ntp:
-  enable: true
-  write-to-system: false
-  server: time.apple.com
-  port: 123
-  interval: 30
-geox-url:
-  geoip: https://github.com/DustinWin/ruleset_geodata/releases/download/clash/geoip-all.dat
-  geosite: https://github.com/DustinWin/ruleset_geodata/releases/download/clash/geosite-all.dat
-  mmdb: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-geodata/Country-all.mmdb
-proxies: null
-proxy-groups:
-- name: 🌏 快速选择代理
-  type: select
-  proxies:
-  - 🇭🇰 选择香港节点
-  - 🇺🇲 选择美国节点
-  - 🇯🇵 选择日本节点
-  - 🇦🇺 选择澳大利亚节点
-  - 🇺🇦 选择乌克兰节点
-  - 🇨🇳 选择台湾节点
-  - 🇸🇬 选择新加坡节点
-  - 🇬🇧 选择英国节点
-  - 🇦🇷 选择阿根廷节点
-  - 🇷🇺 选择俄罗斯节点
-  - 🇹🇷 选择土耳其节点
-  - 🇰🇷 选择韩国节点
-  - 🇮🇳 选择印度节点
-  - 🇩🇪 选择德国节点
-  - 🇨🇦 选择加拿大节点
-  - 🇫🇷 选择法国节点
-  - REJECT
-  - DIRECT
-  - temp_1
-  - temp_2
-  - temp_3
-- name: 🔰 环大陆
-  type: select
-  proxies:
-  - 🇺🇲 选择美国节点
-  - 🌏 快速选择代理
-  - 🇯🇵 选择日本节点
-  - 🇸🇬 选择新加坡节点
-  - 🇬🇧 选择英国节点
-  - 🇦🇷 选择阿根廷节点
-  - 🇷🇺 选择俄罗斯节点
-  - 🇹🇷 选择土耳其节点
-  - 🇰🇷 选择韩国节点
-  - 🇮🇳 选择印度节点
-  - 🇩🇪 选择德国节点
-  - 🇨🇦 选择加拿大节点
-  - 🇦🇺 选择澳大利亚节点
-  - 🇫🇷 选择法国节点
-  - 🇺🇦 选择乌克兰节点
-  - REJECT
-  - DIRECT
-  - temp_1
-  - temp_2
-  - temp_3
-- name: 🤖 人工智能
-  type: select
-  proxies:
-  - 🔰 环大陆
-  - 🇺🇲 选择美国节点
-  - 🌏 快速选择代理
-  - 🇯🇵 选择日本节点
-  - 🇦🇺 选择澳大利亚节点
-  - 🇺🇦 选择乌克兰节点
-  - 🇸🇬 选择新加坡节点
-  - 🇬🇧 选择英国节点
-  - 🇦🇷 选择阿根廷节点
-  - 🇷🇺 选择俄罗斯节点
-  - 🇹🇷 选择土耳其节点
-  - 🇰🇷 选择韩国节点
-  - 🇮🇳 选择印度节点
-  - 🇩🇪 选择德国节点
-  - 🇨🇦 选择加拿大节点
-  - 🇫🇷 选择法国节点
-  - 🇭🇰 选择香港节点
-  - 🇨🇳 选择台湾节点
-  - REJECT
-  - DIRECT
-  - temp_1
-  - temp_2
-  - temp_3
-- name: 📈 网络测试
-  type: select
-  proxies:
-  - 🌏 快速选择代理
-  - 🔰 环大陆
-  - 🍎 苹果服务
-  - 🤖 人工智能
-  - 🇬 谷歌服务
-  - 🎮 游戏服务
-  - 🎥 流媒体
-  - REJECT
-  - DIRECT
-  - temp_1
-  - temp_2
-  - temp_3
-- name: 🍎 苹果服务
-  type: select
-  proxies:
-  - DIRECT
-  - 🌏 快速选择代理
-  - 🔰 环大陆
-  - 🇭🇰 选择香港节点
-  - 🇺🇲 选择美国节点
-  - 🇯🇵 选择日本节点
-  - 🇦🇺 选择澳大利亚节点
-  - 🇺🇦 选择乌克兰节点
-  - 🇨🇳 选择台湾节点
-  - 🇸🇬 选择新加坡节点
-  - 🇬🇧 选择英国节点
-  - 🇦🇷 选择阿根廷节点
-  - 🇷🇺 选择俄罗斯节点
-  - 🇹🇷 选择土耳其节点
-  - 🇰🇷 选择韩国节点
-  - 🇮🇳 选择印度节点
-  - 🇩🇪 选择德国节点
-  - 🇨🇦 选择加拿大节点
-  - 🇫🇷 选择法国节点
-  - REJECT
-  - DIRECT
-  - temp_1
-  - temp_2
-  - temp_3
-- name: 🇬 谷歌服务
-  type: select
-  proxies:
-  - 🔰 环大陆
-  - 🌏 快速选择代理
-  - 🇭🇰 选择香港节点
-  - 🇺🇲 选择美国节点
-  - 🇯🇵 选择日本节点
-  - 🇦🇺 选择澳大利亚节点
-  - 🇺🇦 选择乌克兰节点
-  - 🇨🇳 选择台湾节点
-  - 🇸🇬 选择新加坡节点
-  - 🇬🇧 选择英国节点
-  - 🇦🇷 选择阿根廷节点
-  - 🇷🇺 选择俄罗斯节点
-  - 🇹🇷 选择土耳其节点
-  - 🇰🇷 选择韩国节点
-  - 🇮🇳 选择印度节点
-  - 🇩🇪 选择德国节点
-  - 🇨🇦 选择加拿大节点
-  - 🇫🇷 选择法国节点
-  - REJECT
-  - DIRECT
-  - temp_1
-  - temp_2
-  - temp_3
-- name: 🎮 游戏服务
-  type: select
-  proxies:
-  - 🌏 快速选择代理
-  - DIRECT
-  - 🔰 环大陆
-  - 🇭🇰 选择香港节点
-  - 🇺🇲 选择美国节点
-  - 🇯🇵 选择日本节点
-  - 🇦🇺 选择澳大利亚节点
-  - 🇺🇦 选择乌克兰节点
-  - 🇨🇳 选择台湾节点
-  - 🇸🇬 选择新加坡节点
-  - 🇬🇧 选择英国节点
-  - 🇦🇷 选择阿根廷节点
-  - 🇷🇺 选择俄罗斯节点
-  - 🇹🇷 选择土耳其节点
-  - 🇰🇷 选择韩国节点
-  - 🇮🇳 选择印度节点
-  - 🇩🇪 选择德国节点
-  - 🇨🇦 选择加拿大节点
-  - 🇫🇷 选择法国节点
-  - REJECT
-  - temp_1
-  - temp_2
-  - temp_3
-  - DIRECT
-- name: 🎥 流媒体
-  type: select
-  proxies:
-  - 🔰 环大陆
-  - 🌏 快速选择代理
-  - 🇭🇰 选择香港节点
-  - 🇺🇲 选择美国节点
-  - 🇯🇵 选择日本节点
-  - 🇦🇺 选择澳大利亚节点
-  - 🇺🇦 选择乌克兰节点
-  - 🇨🇳 选择台湾节点
-  - 🇸🇬 选择新加坡节点
-  - 🇬🇧 选择英国节点
-  - 🇦🇷 选择阿根廷节点
-  - 🇷🇺 选择俄罗斯节点
-  - 🇹🇷 选择土耳其节点
-  - 🇰🇷 选择韩国节点
-  - 🇮🇳 选择印度节点
-  - 🇩🇪 选择德国节点
-  - 🇨🇦 选择加拿大节点
-  - 🇫🇷 选择法国节点
-  - REJECT
-  - DIRECT
-  - temp_1
-  - temp_2
-  - temp_3
-- name: 📲 电报消息
-  type: select
-  proxies:
-  - 🔰 环大陆
-  - 🌏 快速选择代理
-  - 🇭🇰 选择香港节点
-  - 🇺🇲 选择美国节点
-  - 🇯🇵 选择日本节点
-  - 🇦🇺 选择澳大利亚节点
-  - 🇺🇦 选择乌克兰节点
-  - 🇨🇳 选择台湾节点
-  - 🇸🇬 选择新加坡节点
-  - 🇬🇧 选择英国节点
-  - 🇦🇷 选择阿根廷节点
-  - 🇷🇺 选择俄罗斯节点
-  - 🇹🇷 选择土耳其节点
-  - 🇰🇷 选择韩国节点
-  - 🇮🇳 选择印度节点
-  - 🇩🇪 选择德国节点
-  - 🇨🇦 选择加拿大节点
-  - 🇫🇷 选择法国节点
-  - REJECT
-  - DIRECT
-  - temp_1
-  - temp_2
-  - temp_3
-- name: 🔰 iCloud
-  type: select
-  proxies:
-  - 🌏 快速选择代理
-  - 🇨🇳 选择台湾节点
-  - 🇭🇰 选择香港节点
-  - 🇺🇲 选择美国节点
-  - 🇯🇵 选择日本节点
-  - 🇸🇬 选择新加坡节点
-  - 🇬🇧 选择英国节点
-  - 🇦🇷 选择阿根廷节点
-  - 🇷🇺 选择俄罗斯节点
-  - 🇹🇷 选择土耳其节点
-  - 🇰🇷 选择韩国节点
-  - 🇮🇳 选择印度节点
-  - 🇩🇪 选择德国节点
-  - 🇨🇦 选择加拿大节点
-  - 🇦🇺 选择澳大利亚节点
-  - 🇫🇷 选择法国节点
-  - 🇺🇦 选择乌克兰节点
-  - REJECT
-  - DIRECT
-  - temp_1
-  - temp_2
-  - temp_3
-- name: 🔰 BING
-  type: select
-  proxies:
-  - DIRECT
-  - 🔰 环大陆
-  - 🌏 快速选择代理
-  - temp_1
-  - temp_2
-  - temp_3
-  - REJECT
-- name: 🔰 广告
-  type: select
-  proxies:
-  - REJECT
-  - 🌏 快速选择代理
-  - 🔰 环大陆
-  - DIRECT
-  - temp_1
-  - temp_2
-  - temp_3
-- name: 🔰 国内网站
-  type: select
-  proxies:
-  - DIRECT
-  - REJECT
-  - 🌏 快速选择代理
-  - 🔰 环大陆
-  - temp_1
-  - temp_2
-  - temp_3
-- name: 🔒 私有网络
-  type: select
-  proxies:
-  - DIRECT
-- name: 🌏 规则之外
-  type: select
-  proxies:
-  - 🌏 快速选择代理
-  - 🔰 环大陆
-  - REJECT
-  - DIRECT
-  - temp_1
-  - temp_2
-  - temp_3
-- name: temp_1
-  type: select
-  use:
-  - myclash
-  proxies:
-  - DIRECT
-  - REJECT
-- name: temp_2
-  type: select
-  use:
-  - myclash
-  proxies:
-  - DIRECT
-  - REJECT
-- name: temp_3
-  type: select
-  use:
-  - myclash
-  proxies:
-  - DIRECT
-  - REJECT
-- name: 🇺🇲 选择美国节点
-  type: fallback
-  use:
-  - myclash
-  filter: 美国
-  url: https://cp.cloudflare.com/generate_204
-  interval: 300
-- name: 🇬🇧 选择英国节点
-  type: fallback
-  use:
-  - myclash
-  filter: 英国
-  url: https://cp.cloudflare.com/generate_204
-  interval: 300
-- name: 🇫🇷 选择法国节点
-  type: fallback
-  use:
-  - myclash
-  filter: 法国
-  url: https://cp.cloudflare.com/generate_204
-  interval: 300
-- name: 🇯🇵 选择日本节点
-  type: fallback
-  use:
-  - myclash
-  filter: 日本
-  url: https://cp.cloudflare.com/generate_204
-  interval: 300
-- name: 🇭🇰 选择香港节点
-  type: fallback
-  use:
-  - myclash
-  filter: 香港
-  url: https://cp.cloudflare.com/generate_204
-  interval: 300
-- name: 🇨🇳 选择台湾节点
-  type: fallback
-  use:
-  - myclash
-  filter: 台湾
-  url: https://cp.cloudflare.com/generate_204
-  interval: 300
-- name: 🇸🇬 选择新加坡节点
-  type: fallback
-  use:
-  - myclash
-  filter: 新加坡
-  url: https://cp.cloudflare.com/generate_204
-  interval: 300
-- name: 🇨🇦 选择加拿大节点
-  type: fallback
-  use:
-  - myclash
-  filter: 加拿大
-  url: https://cp.cloudflare.com/generate_204
-  interval: 300
-- name: 🇦🇺 选择澳大利亚节点
-  type: fallback
-  use:
-  - myclash
-  filter: 澳大利亚
-  url: https://cp.cloudflare.com/generate_204
-  interval: 300
-- name: 🇦🇷 选择阿根廷节点
-  type: fallback
-  use:
-  - myclash
-  filter: 阿根廷
-  url: https://cp.cloudflare.com/generate_204
-  interval: 300
-- name: 🇷🇺 选择俄罗斯节点
-  type: fallback
-  use:
-  - myclash
-  filter: 俄罗斯
-  url: https://cp.cloudflare.com/generate_204
-  interval: 300
-- name: 🇹🇷 选择土耳其节点
-  type: fallback
-  use:
-  - myclash
-  filter: 土耳其
-  url: https://cp.cloudflare.com/generate_204
-  interval: 300
-- name: 🇰🇷 选择韩国节点
-  type: fallback
-  use:
-  - myclash
-  filter: 韩国
-  url: https://cp.cloudflare.com/generate_204
-  interval: 300
-- name: 🇮🇳 选择印度节点
-  type: fallback
-  use:
-  - myclash
-  filter: 印度
-  url: https://cp.cloudflare.com/generate_204
-  interval: 300
-- name: 🇩🇪 选择德国节点
-  type: fallback
-  use:
-  - myclash
-  filter: 德国
-  url: https://cp.cloudflare.com/generate_204
-  interval: 300
-- name: 🇺🇦 选择乌克兰节点
-  type: fallback
-  use:
-  - myclash
-  filter: 乌克兰
-  url: https://cp.cloudflare.com/generate_204
-  interval: 300
-- name: 😊 选择其他国家节点
-  type: fallback
-  use:
-  - myclash
-  exclude-filter: 香港|日本|新加坡|台湾|美国|英国|阿根廷|俄罗斯|土耳其|韩国|印度|德国|加拿大|澳大利亚|法国|乌克兰
-  url: https://cp.cloudflare.com/generate_204
-  interval: 300
-rule-providers:
-  reject:
-    type: http
-    behavior: domain
-    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt
-    path: ./ruleset/reject.yaml
-    interval: 86400
-  icloud:
-    type: http
-    behavior: domain
-    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.txt
-    path: ./ruleset/icloud.yaml
-    interval: 86400
-  apple:
-    type: http
-    behavior: domain
-    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt
-    path: ./ruleset/apple.yaml
-    interval: 86400
-  google:
-    type: http
-    behavior: domain
-    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt
-    path: ./ruleset/google.yaml
-    interval: 86400
-  proxy:
-    type: http
-    behavior: domain
-    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt
-    path: ./ruleset/proxy.yaml
-    interval: 86400
-  direct:
-    type: http
-    behavior: domain
-    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt
-    path: ./ruleset/direct.yaml
-    interval: 86400
-  private:
-    type: http
-    behavior: domain
-    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt
-    path: ./ruleset/private.yaml
-    interval: 86400
-  gfw:
-    type: http
-    behavior: domain
-    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/gfw.txt
-    path: ./ruleset/gfw.yaml
-    interval: 86400
-  tld-not-cn:
-    type: http
-    behavior: domain
-    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/tld-not-cn.txt
-    path: ./ruleset/tld-not-cn.yaml
-    interval: 86400
-  telegramcidr:
-    type: http
-    behavior: ipcidr
-    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt
-    path: ./ruleset/telegramcidr.yaml
-    interval: 86400
-  cncidr:
-    type: http
-    behavior: ipcidr
-    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt
-    path: ./ruleset/cncidr.yaml
-    interval: 86400
-  lancidr:
-    type: http
-    behavior: ipcidr
-    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt
-    path: ./ruleset/lancidr.yaml
-    interval: 86400
-  applications:
-    type: http
-    behavior: classical
-    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/applications.txt
-    path: ./ruleset/applications.yaml
-    interval: 86400
-  bing:
-    type: http
-    behavior: classical
-    url: https://rules.xkww3n.cyou/yaml/bing.yaml
-    path: ./ruleset/bing.yaml
-    interval: 86400
-  mnban:
-    type: http
-    behavior: classical
-    url: https://raw.githubusercontent.com/LIghtJUNction/MagicMihomo/main/ruleset/magicnet/ban.yaml
-    path: ./ruleset/magicnet/ban.yaml
-    interval: 86400
-  mndirect:
-    type: http
-    behavior: classical
-    url: https://raw.githubusercontent.com/LIghtJUNction/MagicMihomo/main/ruleset/magicnet/direct.yaml
-    path: ./ruleset/magicnet/direct.yaml
-    interval: 86400
-rules:
-- RULE-SET,lancidr,DIRECT
-- RULE-SET,private,DIRECT
-- RULE-SET,mndirect,DIRECT
-- RULE-SET,mnban,REJECT
-- RULE-SET,reject,🔰 广告
-- GEOSITE,ads,🔰 广告
-- GEOSITE,private,DIRECT
-- IP-CIDR,127.0.0.1/32,REJECT,no-resolve
-- IP-CIDR,198.18.0.1/16,REJECT,no-resolve
-- IP-CIDR,28.0.0.1/8,REJECT,no-resolve
-- IP-CIDR6,::1/128,REJECT,no-resolve
-- AND,((NETWORK,TCP),(DST-PORT,5228-5230)),DIRECT
-- AND,((NETWORK,TCP),(DST-PORT,5228-5230),(OR,((DOMAIN-KEYWORD,google)))),DIRECT
-- AND,((NETWORK,UDP),(DST-PORT,123)),DIRECT
-- DST-PORT,123/136/137-139,DIRECT,udp
-- GEOSITE,ai,🔰 环大陆
-- RULE-SET,google,🔰 环大陆
-- RULE-SET,proxy,🔰 环大陆
-- GEOSITE,networktest,📈 网络测试
-- RULE-SET,telegramcidr,📲 电报消息
-- RULE-SET,icloud,🔰 iCloud
-- RULE-SET,bing,🔰 BING
-- GEOSITE,games,🎮 游戏服务
-- GEOSITE,media,🎥 流媒体
-- GEOSITE,apple-cn,🍎 苹果服务
-- RULE-SET,apple,🍎 苹果服务
-- GEOSITE,google-cn,🇬 谷歌服务
-- RULE-SET,applications,🔰 国内网站
-- RULE-SET,direct,🔰 国内网站
-- RULE-SET,cncidr,🔰 国内网站
-- GEOSITE,cn,🔰 国内网站
-- DOMAIN-SUFFIX,o33249.ingest.sentry.io,REJECT
-- DOMAIN-SUFFIX,openaicom.imgix.net,REJECT
-- MATCH,🌏 规则之外

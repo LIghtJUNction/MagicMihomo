@@ -66,15 +66,17 @@ dns:
     - 223.5.5.5
     - 119.29.29.29
   nameserver: # 默认解析服务器：当 nameserver-policy 未匹配时使用
-    - 1.1.1.1🌏 快速选择代理
-    - 8.8.8.8🌏 快速选择代理
+    - 1.1.1.1
+    - 8.8.8.8
   nameserver-policy: # 国内域名使用国内 DoH，不走代理
-    "geosite:cn,private,apple":
+    "geosite:cn,private,apple-cn,games-cn,microsoft-cn":
       - 223.5.5.5
       - doh.pub
-    "geosite:geolocation-!cn": # 强制指定某些域名走特定代理节点的 DNS（可选）
-      - dns.google🌏 快速选择代理
-      - 1.1.1.1🌏 快速选择代理
+    "geosite:proxy,ai": # 强制指定某些域名走特定代理节点的 DNS（可选）
+      - dns.google
+      - 1.1.1.1
+    "geosite:ads": # 广告...
+      - 127.0.0.1
 tun:
   enable: true
   stack: mixed # 推荐使用 mixed 或 gvisor，性能优于 system
@@ -109,7 +111,7 @@ sniffer:
   skip-domain: # 跳过嗅探的域名 (避免某些加密连接因嗅探握手失败)
     - "Mijia Cloud"
     - "+.apple.com"
-    - "geosite:apple" # 推荐使用 geosite 写法
+    - "geosite:apple-cn" # 推荐使用 geosite 写法
     - "geosite:private"
 profile:
   store-selected: true
@@ -127,9 +129,9 @@ ntp:
     - pool.ntp.org
 geox-url:
   geoip: https://github.com/DustinWin/ruleset_geodata/releases/download/clash/geoip-all.dat
-  geosite: https://github.com/DustinWin/ruleset_geodata/releases/download/clash/geosite-all.dat
+  geosite: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-geodata/geosite-all.dat
   mmdb: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-geodata/Country-all.mmdb
-proxies: null
+proxies: []
 providers-default: # use: *ALL_PROVIDERS
   premium: &PREMIUM_PROVIDERS
     - premium_a # 付费订阅链接a
@@ -141,7 +143,7 @@ providers-default: # use: *ALL_PROVIDERS
     - free_c # 免费订阅链接c
     - free_d # 免费订阅链接d
     - free_e # 免费订阅链接e
-  buildin: &BUILDIN_PROVIDERS
+  builtin: &BUILTIN_PROVIDERS
     - DIRECT
     - REJECT
   all_providers: &ALL_PROVIDERS
@@ -153,8 +155,6 @@ providers-default: # use: *ALL_PROVIDERS
     - free_c # 免费订阅链接c
     - free_d # 免费订阅链接d
     - free_e # 免费订阅链接e
-    - DIRECT
-    - REJECT
 proxy-groups-defaults: # 代理组默认值
   proxies: &PROXIES
     - 🇺🇲 选择美国节点

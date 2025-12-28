@@ -250,7 +250,7 @@ proxy-groups:
     <<: *PROXIES_GROUP_MORE
   # 国家/地区分组(坚持一个中国原则，台湾属于地区)
   - name: 🇺🇲 选择美国节点
-    <<: *PROXIES_GROUP_MORE
+    <<: *URLTEST_DEFAULTS
     filter: "(?i)美国|US|USA|United States|America"
   - name: 🇯🇵 选择日本节点
     <<: *URLTEST_DEFAULTS

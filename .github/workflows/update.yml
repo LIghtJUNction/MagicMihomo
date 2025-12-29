@@ -39,8 +39,6 @@ jobs:
           echo "telegram_cidr=https://raw.githubusercontent.com/Loyalsoldier/geoip/release/text/telegram.txt" >> $GITHUB_ENV
           echo "bing=https://rules.xkww3n.cyou/classical/bing.txt" >> $GITHUB_ENV
 
-          echo "geoip=https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-geodata/geoip-all.dat" >> $GITHUB_ENV
-          echo "geosite=https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-geodata/geosite-all.dat" >> $GITHUB_ENV
         shell: bash
       - name: Checkout the "main" branch
         uses: actions/checkout@v6
@@ -105,10 +103,7 @@ jobs:
         run: |
           echo "payload:" > bing.txt
           curl -sSL ${bing} | perl -ne '/(.+\/\d+)/ && print "  - |$1|\n"' | sed "s/|/'/g" >> bing.txt
-      - name: Update GeoData
-        run: |
-          curl -sSL "${geoip}" -o GeoIP.dat
-          curl -sSL "${geosite}" -o GeoSite.dat
+
       - name: Move files to publish directory
         run: |
           mkdir -p publish

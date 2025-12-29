@@ -300,6 +300,7 @@ rule-providers-default:
     behavior: domain
     interval: 86400
 rule-providers:
+  # -- Loyalsoldier -- #
   reject:
     <<: *HTTP_DEFAULTS
     url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt
@@ -352,10 +353,12 @@ rule-providers:
     <<: *HTTP_DEFAULTS
     url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/applications.txt
     path: ./ruleset/applications.yaml
-  bing:
+  # -- xkww3n -- #
+  xkww3n-bing:
     <<: *HTTP_DEFAULTS
     url: https://rules.xkww3n.cyou/yaml/bing.yaml
     path: ./ruleset/bing.yaml
+  # -- magicnet 安全规则集 -- #
   mnban:
     <<: *HTTP_DEFAULTS
     url: https://raw.githubusercontent.com/LIghtJUNction/MagicMihomo/main/ruleset/magicnet/ban.yaml
@@ -401,7 +404,7 @@ rules:
   - GEOSITE,games-cn,🎮 游戏服务 # 国内游戏直连加速
   # 7) 【人工智能】AI 优先策略
   - GEOSITE,ai,🤖 人工智能
-  - RULE-SET,bing,🤖 人工智能
+  - RULE-SET,xkww3n-bing,🤖 人工智能
   # 8) 【环大陆分流】(TLD-Proxy / GFW / Proxy)
   - GEOSITE,tld-proxy,🔰 环大陆 # 非中国顶级域名加速
   - GEOSITE,gfw,🔰 环大陆

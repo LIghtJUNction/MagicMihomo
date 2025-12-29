@@ -49,50 +49,71 @@ proxy-providers: # 请自行修改！
 dns:
   enable: true
   listen: 0.0.0.0:1053
-  ipv6: true
+  ipv6: true # 开启 IPv6 解析
   use-hosts: true
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
+  # fake-ip-range-v6: fc00::/18 # 如果需要 IPv6 Fake-IP 建议取消此行注释
   cache-algorithm: arc
-  prefer-h3: true # 大部分主流DoH已全面支持HTTP/3
-  fake-ip-filter:
-    - "+.lan"
-    - "+.local"
-    - "geosite:private"
-    - "geosite:cn" # 如果你希望国内域名返回真实IP，取消此行注释
-    - "+.stun.*"
-    - "lens.l.google.com" # 修复Google Lens冲突
-  default-nameserver: # 基础解析服务器：用于解析 DoH/DoT 的域名
+  prefer-h3: true
+  default-nameserver: # 【解决循环依赖】必须包含 IPv4 和 IPv6 的双栈基础 DNS
     - 223.5.5.5
-    - 119.29.29.29
-  nameserver: # 默认解析服务器：当 nameserver-policy 未匹配时使用
+    - 2401:3200::1 # 阿里 IPv6 DNS
     - 1.1.1.1
-    - 8.8.8.8
-  nameserver-policy: # 国内域名使用国内 DoH，不走代理
-    "geosite:cn,private,apple-cn,games-cn,microsoft-cn":
+    - 2606:4700:4700::1111 # Cloudflare IPv6 DNS
+  nameserver: # 【全加密解析】同时配置双栈 DoH/DoT
+    - 8.8.8.8 # Google (支持 H3)
+    - 2001:4860:4860::8888
+    - 1.1.1.1 # Cloudflare (支持 H3)
+    - 2606:4700:4700::1111
+    - quic://dns.adguard-dns.com # AdGuard (支持 DoQ, 极速响应)
+  nameserver-policy:
+    # 国内核心域名：使用阿里/腾讯双栈 DoH 加密解析，确保 CDN 加速
+    "geosite:cn,apple-cn,microsoft-cn,google-cn,games-cn,private":
       - 223.5.5.5
+      - 2401:3200::1
       - doh.pub
-    "geosite:proxy,ai": # 强制指定某些域名走特定代理节点的 DNS（可选）
+    # 代理与 AI 类：强制走海外高性能 DoH/DoQ，防止污染
+    "geosite:proxy,ai,gfw,tld-proxy":
+      - 8.8.8.8
+      - 1.1.1.1
+      - quic://dns.adguard-dns.com
+    # 影音媒体与游戏：优化延迟
+    "geosite:media,games":
       - dns.google
       - 1.1.1.1
-    "geosite:ads": # 广告...
-      - 127.0.0.1
+    # 网络连通性测试：返回真实解析，避免被代理拦截导致判断误报
+    "geosite:networktest":
+      - 223.5.5.5
+      - 119.29.29.29
+    # 广告与追踪器：直接丢弃或返回 127.0.0.1
+    "geosite:ads,trackerslist":
+      - rcode://refused
 tun:
   enable: true
   stack: mixed # 推荐使用 mixed 或 gvisor，性能优于 system
   device: utun
-  mtu: 1500 # 恢复为标准值，避免部分网站无法访问 (MTU 9000 仅限纯内网环境)
+  mtu: 1500 # 标准值
   auto-route: true # 自动接管系统流量
   auto-detect-interface: true # 自动选择主出口网卡
   strict-route: true # 开启后可防止流量绕过代理
   endpoint-independent-nat: true # 开启独立于端点的 NAT (锥形 NAT)，对游戏/P2P 非常友好
-  dns-hijack: # DNS 劫持配置
-    - "any:53" # 简化写法，劫持所有 53 端口流量
-    - "tcp://any:53"
-  inet4-route-exclude-address: # 排除本地网段 (保留 192.168.x.x 等，确保局域网设备互访)
-    - 192.168.0.0/16
-    - 10.0.0.0/8
-    - 172.16.0.0/12
+  dns-hijack:
+    - "any:53" # 劫持所有 IPv4 UDP/53 流量
+    - "tcp://any:53" # 劫持所有 IPv4 TCP/53 流量
+    - "[::]:53" # 劫持所有 IPv6 UDP/53 流量
+    - "tcp://[::]:53" # 劫持所有 IPv6 TCP/53 流量
+  inet4-route-exclude-address:
+    - 192.168.0.0/16 # 標準局域網
+    - 10.0.0.0/8 # 企業/大中型局域網
+    - 172.16.0.0/12 # 中型局域網
+    - 127.0.0.0/8 # 本地環回
+    - 169.254.0.0/16 # 鏈路本地地址（DHCP失敗時使用）
+    - 224.0.0.0/4 # 組播地址（多用於局域網設備發現/投屏）
+  inet6-route-exclude-address:
+    - fc00::/7 # 唯一本地地址 (ULA) - 相當於 IPv4 的 192.168
+    - fe80::/10 # 鏈路本地地址 (Link-Local) - 關鍵：用於局域網發現和自動配置
+    - ff00::/8 # 組播地址 (Multicast) - 用於 IPv6 的鄰居發現 (NDP) 和投屏
 sniffer:
   enable: true
   parse-pure-ip: true # 建议开启：处理纯 IP 流量时尝试还原域名
@@ -100,19 +121,27 @@ sniffer:
   override-destination: true # 全局覆盖目标地址
   sniff:
     TLS: # TLS 嗅探 (HTTPS)
-      ports: [443, 8443]
+      ports: [443, 8443, 2096, 2087] # 拓展 Cloudflare 常用端口
     HTTP: # HTTP 嗅探
       ports: [80, 8080-8880]
       override-destination: true # HTTP 强制覆盖
     QUIC: # QUIC 嗅探 (针对 YouTube/Google 优化)
-      ports: [443]
-  force-domain: # 强制进行域名解析还原的域名
-    - "+" # 对所有能嗅探到的流量执行还原，确保规则匹配最准
-  skip-domain: # 跳过嗅探的域名 (避免某些加密连接因嗅探握手失败)
-    - "Mijia Cloud"
+      ports: [443, 8443] # QUIC (HTTP/3) 嗅探，針對 YouTube/Google 最佳化
+  force-domain:
+    - "+" # 2025 頂配：對所有嗅探到的流量執行還原，確保規則匹配最準
+    - "google.com" # 確保 Google 相關服務不走純 IP
+    - "netflix.com" # 影視類強制還原，防止 CDN 鎖區失效
+  skip-domain:
+    - "Mijia Cloud" # 米家等 IoT 設備使用私有協議，嗅探會斷連
+    - "geosite:private" # 私有網絡不嗅探
+    - "geosite:apple-cn" # Apple 服務對 SNI 篡改極其敏感，跳過以保證穩定性
+    - "geosite:microsoft-cn" # 解決 Office365 登錄緩慢
+    - "+.push.apple.com" # 蘋果推送專用
     - "+.apple.com"
-    - "geosite:apple-cn" # 推荐使用 geosite 写法
-    - "geosite:private"
+    - "+.icloud.com"
+    - "+.itunes.apple.com"
+    - "Pairing" # 藍牙/隔空投送相關
+    - "Directory" # 系統目錄服務
 profile:
   store-selected: true
   store-fake-ip: true
@@ -130,7 +159,6 @@ ntp:
 geox-url:
   geoip: https://github.com/DustinWin/ruleset_geodata/releases/download/clash/geoip-all.dat
   geosite: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-geodata/geosite-all.dat
-  mmdb: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-geodata/Country-all.mmdb
 proxies: []
 providers-default: # use: *ALL_PROVIDERS
   premium: &PREMIUM_PROVIDERS
@@ -229,6 +257,8 @@ proxy-groups:
   - name: 🍎 苹果服务 # 默认：🌏 快速选择代理
     <<: *PROXIES_GROUP_MORE
   - name: 🇬 谷歌服务 # 默认：🌏 快速选择代理
+    <<: *PROXIES_GROUP_MORE
+  - name: Ⓜ️ 微软服务 # 默认：🌏 快速选择代理
     <<: *PROXIES_GROUP_MORE
   - name: 🎮 游戏服务 # 默认：🌏 快速选择代理
     <<: *PROXIES_GROUP_MORE
@@ -335,54 +365,69 @@ rule-providers:
     url: https://raw.githubusercontent.com/LIghtJUNction/MagicMihomo/main/ruleset/magicnet/direct.yaml
     path: ./ruleset/magicnet/direct.yaml
 rules:
-  # 1) 本地 / 特殊 IP（尽早拒绝或处理）
+  # 1) 【极高优先级】本地/特殊 IP 拦截与环回
   - IP-CIDR,127.0.0.1/32,REJECT,no-resolve
   - IP-CIDR6,::1/128,REJECT,no-resolve
-  - IP-CIDR,198.18.0.1/16,REJECT,no-resolve
-  - IP-CIDR,28.0.0.0/8,REJECT,no-resolve # 建议确认是否改为 .0/8
-  # 2) 拦截类（ban / 广告）优先：尽早过滤掉不需要的域名
+  - IP-CIDR,198.18.0.0/16,REJECT,no-resolve # 拦截 Fake-IP 环回
+  - IP-CIDR,28.0.0.0/8,REJECT,no-resolve
+  # 2) 【拦截类】广告、追踪器与恶意行为 (GEOSITE + RULE-SET)
+  - GEOSITE,ads,🔰 广告
   - RULE-SET,mnban,REJECT
   - RULE-SET,reject,🔰 广告
-  - GEOSITE,ads,🔰 广告
-  # 3) 局域网 / 私有 / 专用直连
-  - RULE-SET,lancidr,DIRECT
+  - RULE-SET,trackerslist,🔰 广告
+  - DOMAIN-SUFFIX,o33249.ingest.sentry.io,REJECT
+  - DOMAIN-SUFFIX,openaicom.imgix.net,REJECT
+  # 3) 【局域网/私有】IPv4 & IPv6 拥抱 (无感互访)
   - RULE-SET,private,DIRECT
   - GEOSITE,private,DIRECT
-  - RULE-SET,cncidr,🔰 国内网站
-  # 4) 端口/协议相关的直接转发（非常具体，应靠前）
-  - AND,((NETWORK,TCP),(DST-PORT,5228-5230)),DIRECT
-  - AND,((NETWORK,TCP),(DST-PORT,5228-5230),(OR,((DOMAIN-KEYWORD,google)))),DIRECT
+  - RULE-SET,lancidr,DIRECT,no-resolve
+  - IP-CIDR,10.0.0.0/8,DIRECT,no-resolve
+  - IP-CIDR,172.16.0.0/12,DIRECT,no-resolve
+  - IP-CIDR,192.168.0.0/16,DIRECT,no-resolve
+  - IP-CIDR6,fe80::/10,DIRECT,no-resolve # IPv6 链路本地
+  - IP-CIDR6,fc00::/7,DIRECT,no-resolve # IPv6 唯一本地
+  # 4) 【网络连通性测试】防止系统误报断网
+  - GEOSITE,networktest,📈 网络测试
+  # 5) 【特定端口/协议】加速 (NTP / 推送)
   - AND,((NETWORK,UDP),(DST-PORT,123)),DIRECT
-  - AND,((NETWORK,UDP),(DST-PORT,136)),DIRECT
-  - AND,((NETWORK,UDP),(DST-PORT,137-139)),DIRECT
-  # 5) 服务/国家/分流相关（按优先级分组）
-  - RULE-SET,mndirect,DIRECT
-  - GEOSITE,cn,🔰 国内网站
-  - RULE-SET,direct,🔰 国内网站
+  - AND,((NETWORK,TCP),(DST-PORT,5228-5230)),DIRECT # Google Push
+  - AND,((NETWORK,UDP),(DST-PORT,135-139)),DIRECT # NetBIOS
+  # 6) 【国内加速 - 核心大厂】(GEOSITE + RULE-SET)
   - GEOSITE,apple-cn,🍎 苹果服务
   - RULE-SET,apple,🍎 苹果服务
   - RULE-SET,icloud,🔰 iCloud
-  - RULE-SET,telegramcidr,📲 电报消息
-  - RULE-SET,google,🔰 环大陆
-  - GEOSITE,ai,🔰 环大陆
+  - GEOSITE,microsoft-cn,Ⓜ️ 微软服务
+  - GEOSITE,google-cn,🔰 国内网站 # 解决国内 Google 翻译/地图
+  - GEOSITE,games-cn,🎮 游戏服务 # 国内游戏直连加速
+  # 7) 【人工智能】AI 优先策略
+  - GEOSITE,ai,🤖 人工智能
+  - RULE-SET,bing,🤖 人工智能
+  # 8) 【环大陆分流】(TLD-Proxy / GFW / Proxy)
+  - GEOSITE,tld-proxy,🔰 环大陆 # 非中国顶级域名加速
+  - GEOSITE,gfw,🔰 环大陆
+  - GEOSITE,proxy,🔰 环大陆
   - RULE-SET,proxy,🔰 环大陆
-  - GEOSITE,games,🎮 游戏服务
+  - RULE-SET,gfw,🔰 环大陆
+  - RULE-SET,google,🔰 环大陆
+  - RULE-SET,telegramcidr,📲 电报消息,no-resolve
+  # 9) 【全球媒体与游戏】
   - GEOSITE,media,🎥 流媒体
-  - RULE-SET,bing,🔰 BING
+  - GEOSITE,games,🎮 游戏服务
+  # 10) 【国内兜底】(CN)
+  - RULE-SET,mndirect,DIRECT
+  - GEOSITE,cn,🔰 国内网站
+  - RULE-SET,direct,🔰 国内网站
   - RULE-SET,applications,🔰 国内网站
-  - GEOSITE,networktest,📈 网络测试
-  # 6) 特定域名的强制规则（写在靠后，但在 MATCH 前）
-  - DOMAIN-SUFFIX,o33249.ingest.sentry.io,REJECT
-  - DOMAIN-SUFFIX,openaicom.imgix.net,REJECT
-  # 7) 兜底
+  - RULE-SET,cncidr,🔰 国内网站,no-resolve # 关键：判断 IP 在国内则直连，no-resolve 防止泄漏
+  # 11) 【最终兜底】
   - MATCH,🌏 规则之外
-
 port: 7890
 socks-port: 7891
 mixed-port: 7892
 redir-port: 9797
 tproxy-port: 9898
 external-controller: 127.0.0.1:9090
+# secret: "你的强密码"  # 登录 UI 面板时会要求输入此密码
 external-ui: ./ui
 external-ui-name: cubex
 external-ui-url: https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip

@@ -377,7 +377,7 @@ rules:
   - GEOSITE,ads,🔰 广告
   - RULE-SET,mnban,REJECT
   - RULE-SET,reject,🔰 广告
-  - RULE-SET,trackerslist,🔰 广告
+  - GEOSITE,trackerslist,🔰 广告
   - DOMAIN-SUFFIX,o33249.ingest.sentry.io,REJECT
   - DOMAIN-SUFFIX,openaicom.imgix.net,REJECT
   # 3) 【局域网/私有】IPv4 & IPv6 拥抱 (无感互访)

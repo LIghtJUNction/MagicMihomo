@@ -1,2 +1,3 @@
 ui
-cache.db
+*.db
+*.dat

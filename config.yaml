@@ -48,45 +48,61 @@ proxy-providers: # 请自行修改！
     url: "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/ndnode.yaml"
 dns:
   enable: true
-  listen: 0.0.0.0:1053
+  listen: 0.0.0.0:53
   ipv6: true # 开启 IPv6 解析
   use-hosts: true
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
-  # fake-ip-range-v6: fc00::/18 # 如果需要 IPv6 Fake-IP 建议取消此行注释
+  # fake-ip-range-v6: fc00::/18 # IPv6 Fake-IP，Android 环境下视网络情况开启
   cache-algorithm: arc
   prefer-h3: true
-  default-nameserver: # 【解决循环依赖】必须包含 IPv4 和 IPv6 的双栈基础 DNS
+  # 必须排除 Tailscale 域名，否则 MagicDNS 无法与 WireGuard 节点正确握手
+  fake-ip-filter:
+    - "+.tailscale.net"
+    - "+.ts.net"
+    - "+.local"
+    - "geosite:private"
+
+  default-nameserver:
     - 223.5.5.5
-    - 2401:3200::1 # 阿里 IPv6 DNS
+    - 2401:3200::1
     - 1.1.1.1
-    - 2606:4700:4700::1111 # Cloudflare IPv6 DNS
-  nameserver: # 【全加密解析】同时配置双栈 DoH/DoT
-    - 8.8.8.8 # Google (支持 H3)
-    - 2001:4860:4860::8888
-    - 1.1.1.1 # Cloudflare (支持 H3)
     - 2606:4700:4700::1111
-    - quic://dns.adguard-dns.com # AdGuard (支持 DoQ, 极速响应)
+
+  nameserver:
+    - dns.google # 推荐使用 DoH 以获得更好的 H3 支持
+    - cloudflare-dns.com
+    - quic://dns.adguard-dns.com
+
   nameserver-policy:
-    # 国内核心域名：使用阿里/腾讯双栈 DoH 加密解析，确保 CDN 加速
-    "geosite:cn,apple-cn,microsoft-cn,google-cn,games-cn,private":
+    # 2. 国内核心域名：确保 CDN 加速，合并加速
+    "geosite:cn,apple-cn,microsoft-cn,google-cn,games-cn":
       - 223.5.5.5
       - 2401:3200::1
       - doh.pub
-    # 代理与 AI 类：强制走海外高性能 DoH/DoQ，防止污染
+
+    # 3. 局域网与私有域名：直接返回真实 IP
+    "geosite:private, *.local, *.home.arpa":
+      - 223.5.5.5
+      - 2401:3200::1
+
+    # 4. 代理与 AI 类：强制走海外加密协议
     "geosite:proxy,ai,gfw,tld-proxy":
-      - 8.8.8.8
-      - 1.1.1.1
+      - dns.google
+      - cloudflare-dns.com
       - quic://dns.adguard-dns.com
-    # 影音媒体与游戏：优化延迟
+
+    # 5. 影音媒体与游戏：优化延迟
     "geosite:media,games":
       - dns.google
       - 1.1.1.1
-    # 网络连通性测试：返回真实解析，避免被代理拦截导致判断误报
+
+    # 6. 网络连通性测试：返回真实解析，避免误判
     "geosite:networktest":
       - 223.5.5.5
       - 119.29.29.29
-    # 广告与追踪器：直接丢弃或返回 127.0.0.1
+
+    # 7. 广告与追踪器
     "geosite:ads,trackerslist":
       - rcode://refused
 tun:
@@ -94,7 +110,7 @@ tun:
   stack: mixed # 推荐使用 mixed 或 gvisor，性能优于 system
   device: utun
   mtu: 1500 # 标准值
-  auto-route: true # 自动接管系统流量
+  auto-route: true # 自动路由
   auto-detect-interface: true # 自动选择主出口网卡
   strict-route: true # 开启后可防止流量绕过代理
   endpoint-independent-nat: true # 开启独立于端点的 NAT (锥形 NAT)，对游戏/P2P 非常友好
@@ -103,17 +119,26 @@ tun:
     - "tcp://any:53" # 劫持所有 IPv4 TCP/53 流量
     - "[::]:53" # 劫持所有 IPv6 UDP/53 流量
     - "tcp://[::]:53" # 劫持所有 IPv6 TCP/53 流量
+    - "!100.100.100.100:53" # 排除 Tailscale IPv4 DNS
+    - "![fd7a:115c:a1e0::b]:53" # 排除 Tailscale IPv6 DNS (MagicDNS)
+
   inet4-route-exclude-address:
-    - 192.168.0.0/16 # 標準局域網
-    - 10.0.0.0/8 # 企業/大中型局域網
-    - 172.16.0.0/12 # 中型局域網
-    - 127.0.0.0/8 # 本地環回
-    - 169.254.0.0/16 # 鏈路本地地址（DHCP失敗時使用）
-    - 224.0.0.0/4 # 組播地址（多用於局域網設備發現/投屏）
+    - 192.168.0.0/16 # 标准局域网段
+    - 10.0.0.0/8 # 企业级/大型局域网段
+    - 172.16.0.0/12 # 中型局域网段
+    - 100.64.0.0/10 # 运营商级 NAT (CGNAT) 及 Tailscale 默认网段
+    - 127.0.0.0/8 # 本地回环地址
+    - 169.254.0.0/16 # 链路本地地址 (APIPA)
+    - 224.0.0.0/4 # 组播地址 (用于投屏和设备发现)
+
   inet6-route-exclude-address:
-    - fc00::/7 # 唯一本地地址 (ULA) - 相當於 IPv4 的 192.168
-    - fe80::/10 # 鏈路本地地址 (Link-Local) - 關鍵：用於局域網發現和自動配置
-    - ff00::/8 # 組播地址 (Multicast) - 用於 IPv6 的鄰居發現 (NDP) 和投屏
+    - ::1/128 # IPv6 本地回环地址
+    - fc00::/7 # 唯一本地地址 (ULA) - 相当于 IPv4 私有网段
+    - fe80::/10 # 链路本地地址 (Link-Local) - 关键：用于邻居发现 (NDP)
+    - ff00::/8 # 组播地址 (Multicast) - 投屏、路由发现必需
+    - fd7a:115c:a1e0::/48 # Tailscale 专属 IPv6 固定前缀 (强烈建议添加)
+  exclude-package:
+    - com.tailscale.ipn # 排除 Tailscale
 sniffer:
   enable: true
   parse-pure-ip: true # 建议开启：处理纯 IP 流量时尝试还原域名
@@ -278,6 +303,7 @@ proxy-groups:
     <<: *PROXIES_GROUP_MORE_DIRECT
   - name: 🌏 规则之外 # 默认：🌏 快速选择代理
     <<: *PROXIES_GROUP_MORE
+
   # 国家/地区分组(坚持一个中国原则，台湾属于地区)
   - name: 🇺🇲 选择美国节点
     <<: *URLTEST_DEFAULTS

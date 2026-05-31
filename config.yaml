@@ -60,7 +60,14 @@ dns:
   fake-ip-filter:
     - "+.tailscale.net"
     - "+.ts.net"
+    - "+.lan"
     - "+.local"
+    - "+.home.arpa"
+    - "*.arpa"
+    - "*.msftconnecttest.com"
+    - "*.msftncsi.com"
+    - "time.*.com"
+    - "ntp.*.com"
     - "geosite:private"
 
   default-nameserver:
@@ -141,7 +148,17 @@ tun:
     - ff00::/8 # 组播地址 (Multicast) - 投屏、路由发现必需
     - fd7a:115c:a1e0::/48 # Tailscale 专属 IPv6 固定前缀 (强烈建议添加)
   exclude-package:
-    - com.tailscale.ipn # 排除 Tailscale
+    - com.tailscale.ipn # Tailscale
+    - com.wireguard.android # WireGuard
+    - net.openvpn.openvpn # OpenVPN Connect
+    - de.blinkt.openvpn # OpenVPN for Android
+    - com.zerotier.one # ZeroTier One
+    - com.cloudflare.onedotonedotonedotone # Cloudflare WARP
+    - io.nekohasekai.sfa # sing-box for Android
+    - moe.nb4a # NekoBox for Android
+    - com.v2ray.ang # v2rayNG
+    - com.github.kr328.clash # Clash for Android
+    - com.github.metacubex.clash.meta # Clash Meta for Android
 sniffer:
   enable: true
   parse-pure-ip: true # 建议开启：处理纯 IP 流量时尝试还原域名
@@ -156,7 +173,6 @@ sniffer:
     QUIC: # QUIC 嗅探 (针对 YouTube/Google 优化)
       ports: [443, 8443] # QUIC (HTTP/3) 嗅探，針對 YouTube/Google 最佳化
   force-domain:
-    - "+" # 2025 頂配：對所有嗅探到的流量執行還原，確保規則匹配最準
     - "google.com" # 確保 Google 相關服務不走純 IP
     - "netflix.com" # 影視類強制還原，防止 CDN 鎖區失效
   skip-domain:
@@ -164,6 +180,13 @@ sniffer:
     - "geosite:private" # 私有網絡不嗅探
     - "geosite:apple-cn" # Apple 服務對 SNI 篡改極其敏感，跳過以保證穩定性
     - "geosite:microsoft-cn" # 解決 Office365 登錄緩慢
+    - "+.lan"
+    - "+.local"
+    - "+.home.arpa"
+    - "+.tailscale.net"
+    - "+.ts.net"
+    - "*.msftconnecttest.com"
+    - "*.msftncsi.com"
     - "+.push.apple.com" # 蘋果推送專用
     - "+.apple.com"
     - "+.icloud.com"
@@ -473,7 +496,6 @@ geo-update-interval: 24
 keep-alive-interval: 1800
 mode: rule
 log-level: error
-global-client-fingerprint: random
 geodata-loader: standard
 find-process-mode: strict
 bind-address: "*"
@@ -481,9 +503,3 @@ hosts:
   time.facebook.com: 17.253.84.125
   time.android.com: 17.253.84.125
   "*.mihomo.dev": 127.0.0.1
-  .dev: 127.0.0.1
-  alpha.mihomo.dev: ::1
-  test.com:
-    - 1.1.1.1
-    - 2.2.2.2
-  home.lan: lan

@@ -82,7 +82,10 @@ dns:
       - doh.pub
 
     # 3. 局域网与私有域名：直接返回真实 IP
-    "geosite:private, *.local, *.home.arpa":
+    "geosite:private":
+      - 223.5.5.5
+      - 2401:3200::1
+    "+.local,+.home.arpa":
       - 223.5.5.5
       - 2401:3200::1
 

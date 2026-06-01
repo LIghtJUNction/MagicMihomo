@@ -129,8 +129,6 @@ tun:
     - "tcp://any:53" # 劫持所有 IPv4 TCP/53 流量
     - "[::]:53" # 劫持所有 IPv6 UDP/53 流量
     - "tcp://[::]:53" # 劫持所有 IPv6 TCP/53 流量
-    - "!100.100.100.100:53" # 排除 Tailscale IPv4 DNS
-    - "![fd7a:115c:a1e0::b]:53" # 排除 Tailscale IPv6 DNS (MagicDNS)
 
   inet4-route-exclude-address:
     - 192.168.0.0/16 # 标准局域网段

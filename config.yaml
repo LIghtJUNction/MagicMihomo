@@ -325,6 +325,8 @@ proxy-groups:
     <<: *PROXIES_GROUP_MORE_REJECT
   - name: 🔰 国内网站 # 默认：DIRECT
     <<: *PROXIES_GROUP_MORE_DIRECT
+  - name: 🏠 局域网设备 # 默认：DIRECT，可切到代理
+    <<: *PROXIES_GROUP_MORE_DIRECT
   - name: 🔒 私有网络 # 默认：DIRECT
     <<: *PROXIES_GROUP_MORE_DIRECT
   - name: 🌏 规则之外 # 默认：🌏 快速选择代理
@@ -433,14 +435,14 @@ rules:
   - DOMAIN-SUFFIX,o33249.ingest.sentry.io,REJECT
   - DOMAIN-SUFFIX,openaicom.imgix.net,REJECT
   # 3) 【局域网/私有】IPv4 & IPv6 拥抱 (无感互访)
-  - RULE-SET,private,DIRECT
-  - GEOSITE,private,DIRECT
-  - RULE-SET,lancidr,DIRECT,no-resolve
-  - IP-CIDR,10.0.0.0/8,DIRECT,no-resolve
-  - IP-CIDR,172.16.0.0/12,DIRECT,no-resolve
-  - IP-CIDR,192.168.0.0/16,DIRECT,no-resolve
-  - IP-CIDR6,fe80::/10,DIRECT,no-resolve # IPv6 链路本地
-  - IP-CIDR6,fc00::/7,DIRECT,no-resolve # IPv6 唯一本地
+  - RULE-SET,private,🏠 局域网设备
+  - GEOSITE,private,🏠 局域网设备
+  - RULE-SET,lancidr,🏠 局域网设备,no-resolve
+  - IP-CIDR,10.0.0.0/8,🏠 局域网设备,no-resolve
+  - IP-CIDR,172.16.0.0/12,🏠 局域网设备,no-resolve
+  - IP-CIDR,192.168.0.0/16,🏠 局域网设备,no-resolve
+  - IP-CIDR6,fe80::/10,🏠 局域网设备,no-resolve # IPv6 链路本地
+  - IP-CIDR6,fc00::/7,🏠 局域网设备,no-resolve # IPv6 唯一本地
   # 4) 【网络连通性测试】防止系统误报断网
   - GEOSITE,networktest,📈 网络测试
   # 5) 【特定端口/协议】加速 (NTP / 推送)

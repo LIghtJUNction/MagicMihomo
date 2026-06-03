@@ -9,17 +9,14 @@ proxy-provider-templates:
     health-check: {enable: true, url: http://www.gstatic.com/generate_204, interval: 600}
 proxy-providers: # 请自行修改！
   premium_a:
-    <<: *PREMIUM_HTTP_DEFAULTS
+    type: file
     path: ./proxies/A.yaml
-    url: ""
   premium_b:
-    <<: *PREMIUM_HTTP_DEFAULTS
+    type: file
     path: ./proxies/B.yaml
-    url: ""
   premium_c:
-    <<: *PREMIUM_HTTP_DEFAULTS
+    type: file
     path: ./proxies/C.yaml
-    url: ""
 dns:
   enable: true
   listen: 0.0.0.0:53
@@ -128,10 +125,10 @@ geox-url:
   geosite: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-geodata/geosite-all.dat
 proxies: []
 providers-default: # use: *ALL_PROVIDERS
-  premium: &PREMIUM_PROVIDERS [premium_a, premium_b, premium_c]
+  premium: &PREMIUM_PROVIDERS []
   free: &FREE_PROVIDERS []
   builtin: &BUILTIN_PROVIDERS [DIRECT, REJECT]
-  all_providers: &ALL_PROVIDERS [premium_a, premium_b, premium_c]
+  all_providers: &ALL_PROVIDERS []
 proxy-groups-defaults: # 代理组默认值
   proxies: &PROXIES [🇺🇲 选择美国节点, 🇯🇵 选择日本节点, 🇭🇰 选择香港节点, 🇭🇰 选择台湾节点, 😊 选择其他国家节点, DIRECT, REJECT]
   # 不支持数组展开只能这样了
@@ -154,6 +151,7 @@ proxy-groups-defaults: # 代理组默认值
   proxies-group-urltest: &URLTEST_DEFAULTS
     type: url-test
     use: *ALL_PROVIDERS
+    proxies: [DIRECT]
     url: https://cp.cloudflare.com/generate_204
     interval: 300
     tolerance: 50
@@ -161,6 +159,7 @@ proxy-groups-defaults: # 代理组默认值
   proxies-group-fallback: &FALLBACK_DEFAULTS
     type: fallback
     use: *ALL_PROVIDERS
+    proxies: [DIRECT]
     url: https://cp.cloudflare.com/generate_204
     interval: 300
 proxy-groups:

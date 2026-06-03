@@ -433,6 +433,14 @@ rules:
   - GEOSITE,microsoft-cn,Ⓜ️ 微软服务
   - GEOSITE,google-cn,🔰 国内网站 # 解决国内 Google 翻译/地图
   - GEOSITE,games-cn,🎮 游戏服务 # 国内游戏直连加速
+  # 8) 【Google 服务】必须早于 direct 规则集，避免 googleapis.com 被 Loyalsoldier direct 抢走
+  - DOMAIN-SUFFIX,googleapis.com,🇬 谷歌服务
+  - DOMAIN-SUFFIX,google.com,🇬 谷歌服务
+  - DOMAIN-SUFFIX,gstatic.com,🇬 谷歌服务
+  - DOMAIN-SUFFIX,gvt1.com,🇬 谷歌服务
+  - DOMAIN-SUFFIX,googleusercontent.com,🇬 谷歌服务
+  - DOMAIN-SUFFIX,googlevideo.com,🇬 谷歌服务
+  - RULE-SET,google,🇬 谷歌服务
   # 8) 【人工智能】AI 优先策略
   - GEOSITE,ai,🤖 人工智能
   - RULE-SET,xkww3n-bing,🤖 人工智能
@@ -442,7 +450,6 @@ rules:
   - GEOSITE,proxy,🔰 环大陆
   - RULE-SET,proxy,🔰 环大陆
   - RULE-SET,gfw,🔰 环大陆
-  - RULE-SET,google,🔰 环大陆
   - RULE-SET,telegramcidr,📲 电报消息,no-resolve
   # 10) 【全球媒体与游戏】
   - GEOSITE,media,🎥 流媒体

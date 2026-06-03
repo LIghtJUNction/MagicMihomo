@@ -2,17 +2,11 @@ proxy-provider-templates:
   premium-http: &PREMIUM_HTTP_DEFAULTS
     type: http
     interval: 3600
-    health-check:
-      enable: true
-      url: http://www.gstatic.com/generate_204
-      interval: 300
+    health-check: {enable: true, url: http://www.gstatic.com/generate_204, interval: 300}
   free-http: &FREE_HTTP_DEFAULTS
     type: http
     interval: 3600
-    health-check:
-      enable: true
-      url: http://www.gstatic.com/generate_204
-      interval: 600
+    health-check: {enable: true, url: http://www.gstatic.com/generate_204, interval: 600}
 proxy-providers: # 请自行修改！
   premium_a:
     <<: *PREMIUM_HTTP_DEFAULTS
@@ -57,106 +51,53 @@ dns:
   cache-algorithm: arc
   prefer-h3: true
   # 必须排除 Tailscale 域名，否则 MagicDNS 无法与 WireGuard 节点正确握手
-  fake-ip-filter:
-    - "+.tailscale.net"
-    - "+.ts.net"
-    - "+.lan"
-    - "+.local"
-    - "+.home.arpa"
-    - "*.arpa"
-    - "*.msftconnecttest.com"
-    - "*.msftncsi.com"
-    - "time.*.com"
-    - "ntp.*.com"
-    - "geosite:private"
+  fake-ip-filter: ["+.tailscale.net", "+.ts.net", "+.lan", "+.local", "+.home.arpa", "*.arpa", "*.msftconnecttest.com", "*.msftncsi.com", "time.*.com", "ntp.*.com", "geosite:private"]
 
-  default-nameserver:
-    - 223.5.5.5
-    - 2401:3200::1
-    - 1.1.1.1
-    - 2606:4700:4700::1111
+  default-nameserver: [223.5.5.5, 2401:3200::1, 1.1.1.1, 2606:4700:4700::1111]
 
-  nameserver:
-    - dns.google # 推荐使用 DoH 以获得更好的 H3 支持
-    - cloudflare-dns.com
-    - quic://dns.adguard-dns.com
+  nameserver: [dns.google, cloudflare-dns.com, quic://dns.adguard-dns.com]
 
   nameserver-policy:
     # 2. 国内核心域名：确保 CDN 加速，合并加速
     "geosite:cn,apple-cn,microsoft-cn,google-cn,games-cn":
-      - 223.5.5.5
-      - 2401:3200::1
-      - doh.pub
+      [223.5.5.5, 2401:3200::1, doh.pub]
 
     # 3. 局域网与私有域名：直接返回真实 IP
     "geosite:private":
-      - 223.5.5.5
-      - 2401:3200::1
+      [223.5.5.5, 2401:3200::1]
     "+.local,+.home.arpa":
-      - 223.5.5.5
-      - 2401:3200::1
+      [223.5.5.5, 2401:3200::1]
 
     # 4. 代理与 AI 类：强制走海外加密协议
     "geosite:proxy,ai,gfw,tld-proxy":
-      - dns.google
-      - cloudflare-dns.com
-      - quic://dns.adguard-dns.com
+      [dns.google, cloudflare-dns.com, quic://dns.adguard-dns.com]
 
     # 5. 影音媒体与游戏：优化延迟
     "geosite:media,games":
-      - dns.google
-      - 1.1.1.1
+      [dns.google, 1.1.1.1]
 
     # 6. 网络连通性测试：返回真实解析，避免误判
     "geosite:networktest":
-      - 223.5.5.5
-      - 119.29.29.29
+      [223.5.5.5, 119.29.29.29]
 
     # 7. 广告与追踪器
     "geosite:ads,trackerslist":
-      - rcode://refused
+      [rcode://refused]
 tun:
   enable: true
   stack: mixed # 推荐使用 mixed 或 gvisor，性能优于 system
-  device: utun
+  device: magicnet0
   mtu: 1500 # 标准值
   auto-route: true # 自动路由
   auto-detect-interface: true # 自动选择主出口网卡
   strict-route: true # 开启后可防止流量绕过代理
   endpoint-independent-nat: true # 开启独立于端点的 NAT (锥形 NAT)，对游戏/P2P 非常友好
-  dns-hijack:
-    - "any:53" # 劫持所有 IPv4 UDP/53 流量
-    - "tcp://any:53" # 劫持所有 IPv4 TCP/53 流量
-    - "[::]:53" # 劫持所有 IPv6 UDP/53 流量
-    - "tcp://[::]:53" # 劫持所有 IPv6 TCP/53 流量
+  dns-hijack: ["any:53", "tcp://any:53", "[::]:53", "tcp://[::]:53"]
 
-  inet4-route-exclude-address:
-    - 192.168.0.0/16 # 标准局域网段
-    - 10.0.0.0/8 # 企业级/大型局域网段
-    - 172.16.0.0/12 # 中型局域网段
-    - 100.64.0.0/10 # 运营商级 NAT (CGNAT) 及 Tailscale 默认网段
-    - 127.0.0.0/8 # 本地回环地址
-    - 169.254.0.0/16 # 链路本地地址 (APIPA)
-    - 224.0.0.0/4 # 组播地址 (用于投屏和设备发现)
+  inet4-route-exclude-address: [192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12, 100.64.0.0/10, 127.0.0.0/8, 169.254.0.0/16, 224.0.0.0/4]
 
-  inet6-route-exclude-address:
-    - ::1/128 # IPv6 本地回环地址
-    - fc00::/7 # 唯一本地地址 (ULA) - 相当于 IPv4 私有网段
-    - fe80::/10 # 链路本地地址 (Link-Local) - 关键：用于邻居发现 (NDP)
-    - ff00::/8 # 组播地址 (Multicast) - 投屏、路由发现必需
-    - fd7a:115c:a1e0::/48 # Tailscale 专属 IPv6 固定前缀 (强烈建议添加)
-  exclude-package:
-    - com.tailscale.ipn # Tailscale
-    - com.wireguard.android # WireGuard
-    - net.openvpn.openvpn # OpenVPN Connect
-    - de.blinkt.openvpn # OpenVPN for Android
-    - com.zerotier.one # ZeroTier One
-    - com.cloudflare.onedotonedotonedotone # Cloudflare WARP
-    - io.nekohasekai.sfa # sing-box for Android
-    - moe.nb4a # NekoBox for Android
-    - com.v2ray.ang # v2rayNG
-    - com.github.kr328.clash # Clash for Android
-    - com.github.metacubex.clash.meta # Clash Meta for Android
+  inet6-route-exclude-address: ["::1/128", "fc00::/7", "fe80::/10", "ff00::/8", "fd7a:115c:a1e0::/48"]
+  exclude-package: [com.tailscale.ipn, com.wireguard.android, net.openvpn.openvpn, de.blinkt.openvpn, com.zerotier.one, com.cloudflare.onedotonedotonedotone, io.nekohasekai.sfa, moe.nb4a, com.v2ray.ang, com.github.kr328.clash, com.github.metacubex.clash.meta]
 sniffer:
   enable: true
   parse-pure-ip: true # 建议开启：处理纯 IP 流量时尝试还原域名
@@ -170,9 +111,7 @@ sniffer:
       override-destination: true # HTTP 强制覆盖
     QUIC: # QUIC 嗅探 (针对 YouTube/Google 优化)
       ports: [443, 8443] # QUIC (HTTP/3) 嗅探，針對 YouTube/Google 最佳化
-  force-domain:
-    - "google.com" # 確保 Google 相關服務不走純 IP
-    - "netflix.com" # 影視類強制還原，防止 CDN 鎖區失效
+  force-domain: ["google.com", "netflix.com"]
   skip-domain:
     - "Mijia Cloud" # 米家等 IoT 設備使用私有協議，嗅探會斷連
     - "geosite:private" # 私有網絡不嗅探
@@ -200,75 +139,22 @@ ntp:
   server: time.apple.com
   port: 123
   interval: 300 #间隔调大至 300s (5分钟)，减少无意义的请求，30s 太频繁了
-  server-list:
-    - time.apple.com
-    - time.cloudflare.com
-    - ntp.aliyun.com
-    - pool.ntp.org
+  server-list: [time.apple.com, time.cloudflare.com, ntp.aliyun.com, pool.ntp.org]
 geox-url:
   geoip: https://github.com/DustinWin/ruleset_geodata/releases/download/clash/geoip-all.dat
   geosite: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-geodata/geosite-all.dat
 proxies: []
 providers-default: # use: *ALL_PROVIDERS
-  premium: &PREMIUM_PROVIDERS
-    - premium_a # 付费订阅链接a
-    - premium_b # 付费订阅链接b
-    - premium_c # 付费订阅链接c
-  free: &FREE_PROVIDERS
-    - free_a # 免费订阅链接a
-    - free_b # 免费订阅链接b
-    - free_c # 免费订阅链接c
-    - free_d # 免费订阅链接d
-    - free_e # 免费订阅链接e
-  builtin: &BUILTIN_PROVIDERS
-    - DIRECT
-    - REJECT
-  all_providers: &ALL_PROVIDERS
-    - premium_a # 付费订阅链接a
-    - premium_b # 付费订阅链接b
-    - premium_c # 付费订阅链接c
-    - free_a # 免费订阅链接a
-    - free_b # 免费订阅链接b
-    - free_c # 免费订阅链接c
-    - free_d # 免费订阅链接d
-    - free_e # 免费订阅链接e
+  premium: &PREMIUM_PROVIDERS [premium_a, premium_b, premium_c]
+  free: &FREE_PROVIDERS [free_a, free_b, free_c, free_d, free_e]
+  builtin: &BUILTIN_PROVIDERS [DIRECT, REJECT]
+  all_providers: &ALL_PROVIDERS [premium_a, premium_b, premium_c, free_a, free_b, free_c, free_d, free_e]
 proxy-groups-defaults: # 代理组默认值
-  proxies: &PROXIES
-    - 🇺🇲 选择美国节点
-    - 🇯🇵 选择日本节点
-    - 🇭🇰 选择香港节点
-    - 🇭🇰 选择台湾节点
-    - 😊 选择其他国家节点
-    - DIRECT
-    - REJECT
+  proxies: &PROXIES [🇺🇲 选择美国节点, 🇯🇵 选择日本节点, 🇭🇰 选择香港节点, 🇭🇰 选择台湾节点, 😊 选择其他国家节点, DIRECT, REJECT]
   # 不支持数组展开只能这样了
-  proxies-more: &PROXIES-MORE
-    - 🌏 快速选择代理
-    - 🇺🇲 选择美国节点
-    - 🇯🇵 选择日本节点
-    - 🇭🇰 选择香港节点
-    - 🇭🇰 选择台湾节点
-    - 😊 选择其他国家节点
-    - DIRECT
-    - REJECT
-  proxies-direct-default: &PROXIES_DIRECT_DEFAULT
-    - DIRECT
-    - 🌏 快速选择代理
-    - 🇺🇲 选择美国节点
-    - 🇯🇵 选择日本节点
-    - 🇭🇰 选择香港节点
-    - 🇭🇰 选择台湾节点
-    - 😊 选择其他国家节点
-    - REJECT
-  proxies-reject-default: &PROXIES_REJECT_DEFAULT
-    - REJECT
-    - DIRECT
-    - 🌏 快速选择代理
-    - 🇺🇲 选择美国节点
-    - 🇯🇵 选择日本节点
-    - 🇭🇰 选择香港节点
-    - 🇭🇰 选择台湾节点
-    - 😊 选择其他国家节点
+  proxies-more: &PROXIES-MORE [🌏 快速选择代理, 🇺🇲 选择美国节点, 🇯🇵 选择日本节点, 🇭🇰 选择香港节点, 🇭🇰 选择台湾节点, 😊 选择其他国家节点, DIRECT, REJECT]
+  proxies-direct-default: &PROXIES_DIRECT_DEFAULT [DIRECT, 🌏 快速选择代理, 🇺🇲 选择美国节点, 🇯🇵 选择日本节点, 🇭🇰 选择香港节点, 🇭🇰 选择台湾节点, 😊 选择其他国家节点, REJECT]
+  proxies-reject-default: &PROXIES_REJECT_DEFAULT [REJECT, DIRECT, 🌏 快速选择代理, 🇺🇲 选择美国节点, 🇯🇵 选择日本节点, 🇭🇰 选择香港节点, 🇭🇰 选择台湾节点, 😊 选择其他国家节点]
   proxies-group-defaults: &PROXIES_GROUP_DEFAULTS
     type: select
     use: *ALL_PROVIDERS
@@ -347,10 +233,7 @@ proxy-groups:
     <<: *FALLBACK_DEFAULTS
     exclude-filter: "(?i)美国|US|USA|United States|America|日本|JP|Japan|Tokyo|香港|HK|Hong Kong|台湾|TW|Taiwan"
 rule-providers-default:
-  http: &HTTP_DEFAULTS
-    type: http
-    behavior: domain
-    interval: 86400
+  http: &HTTP_DEFAULTS {type: http, behavior: domain, interval: 86400}
 rule-providers:
   # -- Loyalsoldier -- #
   reject:

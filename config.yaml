@@ -452,9 +452,6 @@ redir-port: 9797
 tproxy-port: 9898
 external-controller: 127.0.0.1:9090
 # secret: "你的强密码"  # 登录 UI 面板时会要求输入此密码
-external-ui: ./ui
-external-ui-name: cubex
-external-ui-url: https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip
 ipv6: true
 allow-lan: true
 tcp-concurrent: true

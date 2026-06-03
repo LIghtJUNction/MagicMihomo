@@ -11,35 +11,15 @@ proxy-providers: # 请自行修改！
   premium_a:
     <<: *PREMIUM_HTTP_DEFAULTS
     path: ./proxies/A.yaml
-    url: "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/clashmeta.yaml"
+    url: ""
   premium_b:
     <<: *PREMIUM_HTTP_DEFAULTS
     path: ./proxies/B.yaml
-    url: "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/yudou66.yaml"
+    url: ""
   premium_c:
     <<: *PREMIUM_HTTP_DEFAULTS
     path: ./proxies/C.yaml
-    url: "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/blues.yaml"
-  free_a: # https://github.com/Barabama/FreeNodes
-    <<: *FREE_HTTP_DEFAULTS
-    path: ./proxies/a.yaml
-    url: "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/nodefree.yaml"
-  free_b:
-    <<: *FREE_HTTP_DEFAULTS
-    path: ./proxies/b.yaml
-    url: "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/v2rayshare.yaml"
-  free_c:
-    <<: *FREE_HTTP_DEFAULTS
-    path: ./proxies/c.yaml
-    url: "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/wenode.yaml"
-  free_d:
-    <<: *FREE_HTTP_DEFAULTS
-    path: ./proxies/d.yaml
-    url: "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/nodev2ray.yaml"
-  free_e:
-    <<: *FREE_HTTP_DEFAULTS
-    path: ./proxies/e.yaml
-    url: "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/ndnode.yaml"
+    url: ""
 dns:
   enable: true
   listen: 0.0.0.0:53
@@ -54,11 +34,11 @@ dns:
   # 必须排除 Tailscale 域名，否则 MagicDNS 无法与 WireGuard 节点正确握手
   fake-ip-filter: ["+.tailscale.net", "+.ts.net", "+.lan", "+.local", "+.home.arpa", "*.arpa", "*.msftconnecttest.com", "*.msftncsi.com", "time.*.com", "ntp.*.com", "geosite:private"]
 
-  default-nameserver: [tls://1.1.1.1, tls://8.8.8.8]
+  default-nameserver: [https://223.5.5.5/dns-query#dns.alidns.com, https://1.12.12.12/dns-query#doh.pub]
 
-  proxy-server-nameserver: [https://1.1.1.1/dns-query#cloudflare-dns.com, https://8.8.8.8/dns-query#dns.google, quic://94.140.14.14#dns.adguard-dns.com]
+  proxy-server-nameserver: [https://1.1.1.1/dns-query#cloudflare-dns.com, https://8.8.8.8/dns-query#dns.google]
 
-  nameserver: [https://1.1.1.1/dns-query#cloudflare-dns.com, https://8.8.8.8/dns-query#dns.google, quic://94.140.14.14#dns.adguard-dns.com]
+  nameserver: [https://1.1.1.1/dns-query#cloudflare-dns.com, https://8.8.8.8/dns-query#dns.google]
 
   nameserver-policy:
     # 2. 国内核心域名：确保 CDN 加速，合并加速
@@ -73,7 +53,7 @@ dns:
 
     # 4. 代理与 AI 类：强制走海外加密协议
     "geosite:proxy,ai,gfw,tld-proxy":
-      [https://1.1.1.1/dns-query#cloudflare-dns.com, https://8.8.8.8/dns-query#dns.google, quic://94.140.14.14#dns.adguard-dns.com]
+      [https://1.1.1.1/dns-query#cloudflare-dns.com, https://8.8.8.8/dns-query#dns.google]
 
     # 5. 影音媒体与游戏：优化延迟
     "geosite:media,games":
@@ -149,9 +129,9 @@ geox-url:
 proxies: []
 providers-default: # use: *ALL_PROVIDERS
   premium: &PREMIUM_PROVIDERS [premium_a, premium_b, premium_c]
-  free: &FREE_PROVIDERS [free_a, free_b, free_c, free_d, free_e]
+  free: &FREE_PROVIDERS []
   builtin: &BUILTIN_PROVIDERS [DIRECT, REJECT]
-  all_providers: &ALL_PROVIDERS [premium_a, premium_b, premium_c, free_a, free_b, free_c, free_d, free_e]
+  all_providers: &ALL_PROVIDERS [premium_a, premium_b, premium_c]
 proxy-groups-defaults: # 代理组默认值
   proxies: &PROXIES [🇺🇲 选择美国节点, 🇯🇵 选择日本节点, 🇭🇰 选择香港节点, 🇭🇰 选择台湾节点, 😊 选择其他国家节点, DIRECT, REJECT]
   # 不支持数组展开只能这样了

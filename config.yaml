@@ -31,9 +31,9 @@ dns:
   # 必须排除 Tailscale 域名，否则 MagicDNS 无法与 WireGuard 节点正确握手
   fake-ip-filter: ["+.tailscale.net", "+.ts.net", "+.lan", "+.local", "+.home.arpa", "*.arpa", "*.msftconnecttest.com", "*.msftncsi.com", "time.*.com", "ntp.*.com", "geosite:private"]
 
-  default-nameserver: [https://223.5.5.5/dns-query#dns.alidns.com, https://1.12.12.12/dns-query#doh.pub]
+  default-nameserver: [211.138.21.66, 223.5.5.5]
 
-  proxy-server-nameserver: [https://1.1.1.1/dns-query#cloudflare-dns.com, https://8.8.8.8/dns-query#dns.google]
+  proxy-server-nameserver: [211.138.21.66, 223.5.5.5]
 
   nameserver: [https://1.1.1.1/dns-query#cloudflare-dns.com, https://8.8.8.8/dns-query#dns.google]
 
@@ -65,7 +65,7 @@ dns:
       [rcode://refused]
 tun:
   enable: true
-  stack: mixed # 推荐使用 mixed 或 gvisor，性能优于 system
+  stack: gvisor # Android KernelSU/Magisk 环境下更稳定，避免 mixed 栈 read tun: not pollable
   device: magicnet0
   mtu: 1500 # 标准值
   auto-route: true # 自动路由
@@ -78,6 +78,7 @@ tun:
 
   inet6-route-exclude-address: ["::1/128", "fc00::/7", "fe80::/10", "ff00::/8", "fd7a:115c:a1e0::/48"]
   exclude-package: [com.tailscale.ipn, com.wireguard.android, net.openvpn.openvpn, de.blinkt.openvpn, com.zerotier.one, com.cloudflare.onedotonedotonedotone, io.nekohasekai.sfa, moe.nb4a, com.v2ray.ang, com.github.kr328.clash, com.github.metacubex.clash.meta]
+  exclude-uid: [0]
 sniffer:
   enable: true
   parse-pure-ip: true # 建议开启：处理纯 IP 流量时尝试还原域名
@@ -125,10 +126,10 @@ geox-url:
   geosite: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-geodata/geosite-all.dat
 proxies: []
 providers-default: # use: *ALL_PROVIDERS
-  premium: &PREMIUM_PROVIDERS []
+  premium: &PREMIUM_PROVIDERS [premium_a]
   free: &FREE_PROVIDERS []
   builtin: &BUILTIN_PROVIDERS [DIRECT, REJECT]
-  all_providers: &ALL_PROVIDERS []
+  all_providers: &ALL_PROVIDERS [premium_a]
 proxy-groups-defaults: # 代理组默认值
   proxies: &PROXIES [🇺🇲 选择美国节点, 🇯🇵 选择日本节点, 🇭🇰 选择香港节点, 🇭🇰 选择台湾节点, 😊 选择其他国家节点, DIRECT, REJECT]
   # 不支持数组展开只能这样了
@@ -151,7 +152,6 @@ proxy-groups-defaults: # 代理组默认值
   proxies-group-urltest: &URLTEST_DEFAULTS
     type: url-test
     use: *ALL_PROVIDERS
-    proxies: [DIRECT]
     url: https://cp.cloudflare.com/generate_204
     interval: 300
     tolerance: 50
@@ -159,7 +159,6 @@ proxy-groups-defaults: # 代理组默认值
   proxies-group-fallback: &FALLBACK_DEFAULTS
     type: fallback
     use: *ALL_PROVIDERS
-    proxies: [DIRECT]
     url: https://cp.cloudflare.com/generate_204
     interval: 300
 proxy-groups:

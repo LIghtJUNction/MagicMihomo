@@ -255,18 +255,22 @@ rule-providers:
     path: ./ruleset/tld-not-cn.yaml
   telegramcidr:
     <<: *HTTP_DEFAULTS
+    behavior: ipcidr
     url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt
     path: ./ruleset/telegramcidr.yaml
   cncidr:
     <<: *HTTP_DEFAULTS
+    behavior: ipcidr
     url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt
     path: ./ruleset/cncidr.yaml
   lancidr:
     <<: *HTTP_DEFAULTS
+    behavior: ipcidr
     url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt
     path: ./ruleset/lancidr.yaml
   applications:
     <<: *HTTP_DEFAULTS
+    behavior: classical
     url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/applications.txt
     path: ./ruleset/applications.yaml
   # -- xkww3n -- #

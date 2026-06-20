@@ -31,14 +31,15 @@ dns:
   # 必须排除 Tailscale 域名，否则 MagicDNS 无法与 WireGuard 节点正确握手
   fake-ip-filter: ["+.tailscale.net", "+.ts.net", "+.lan", "+.local", "+.home.arpa", "*.arpa", "*.msftconnecttest.com", "*.msftncsi.com", "time.*.com", "ntp.*.com", "geosite:private"]
 
-  default-nameserver: [211.138.21.66, 223.5.5.5]
+  # bootstrap 解析器只用于代理节点域名和 DoH 服务器域名的启动解析；普通业务域名仍走 nameserver/nameserver-policy。
+  default-nameserver: [223.5.5.5, 1.12.12.12]
 
-  proxy-server-nameserver: [211.138.21.66, 223.5.5.5]
+  proxy-server-nameserver: [223.5.5.5, 1.12.12.12]
 
   nameserver: [https://1.1.1.1/dns-query#cloudflare-dns.com, https://8.8.8.8/dns-query#dns.google]
 
   nameserver-policy:
-    # 2. 国内核心域名：确保 CDN 加速，合并加速
+    # 2. 国内核心域名：使用本地 bootstrap，保证国内 CDN 与直连站点命中更合理。
     "geosite:cn,apple-cn,microsoft-cn,google-cn,games-cn":
       [https://223.5.5.5/dns-query#dns.alidns.com, https://1.12.12.12/dns-query#doh.pub]
 
@@ -407,6 +408,33 @@ rules:
   - IP-CIDR6,fc00::/7,🏠 局域网设备,no-resolve # IPv6 唯一本地
   # 5) 【网络连通性测试】防止系统误报断网
   - GEOSITE,networktest,📈 网络测试
+  - DOMAIN-SUFFIX,connectivitycheck.gstatic.com,📈 网络测试
+  - DOMAIN-SUFFIX,connectivitycheck.android.com,📈 网络测试
+  - DOMAIN-SUFFIX,clients3.google.com,📈 网络测试
+  - DOMAIN-SUFFIX,www.gstatic.com,📈 网络测试
+  - DOMAIN-SUFFIX,gstatic.com,📈 网络测试
+  - DOMAIN-SUFFIX,gvt1.com,📈 网络测试
+  - DOMAIN-SUFFIX,gvt2.com,📈 网络测试
+  - DOMAIN-SUFFIX,msftconnecttest.com,📈 网络测试
+  - DOMAIN-SUFFIX,msftncsi.com,📈 网络测试
+  - DOMAIN-SUFFIX,captive.apple.com,📈 网络测试
+  - DOMAIN-SUFFIX,cp.cloudflare.com,📈 网络测试
+  - DOMAIN-SUFFIX,speed.cloudflare.com,📈 网络测试
+  - DOMAIN-SUFFIX,speedtest.net,📈 网络测试
+  - DOMAIN-SUFFIX,ooklaserver.net,📈 网络测试
+  - DOMAIN-SUFFIX,speedtestcdn.com,📈 网络测试
+  - DOMAIN-SUFFIX,fast.com,📈 网络测试
+  - DOMAIN-SUFFIX,nperf.com,📈 网络测试
+  - DOMAIN-SUFFIX,nperf.net,📈 网络测试
+  - DOMAIN-SUFFIX,testmy.net,📈 网络测试
+  - DOMAIN-SUFFIX,browserscan.net,📈 网络测试
+  - DOMAIN-SUFFIX,measurementlab.net,📈 网络测试
+  - DOMAIN-SUFFIX,speed.measurementlab.net,📈 网络测试
+  - DOMAIN-SUFFIX,speedof.me,📈 网络测试
+  - DOMAIN-SUFFIX,speedcheck.org,📈 网络测试
+  - DOMAIN-KEYWORD,speedtest,📈 网络测试
+  - DOMAIN-KEYWORD,ookla,📈 网络测试
+  - DOMAIN-KEYWORD,nperf,📈 网络测试
   # 6) 【特定端口/协议】加速 (NTP / 推送)
   - AND,((NETWORK,UDP),(DST-PORT,123)),DIRECT
   - AND,((NETWORK,TCP),(DST-PORT,5228-5230)),DIRECT # Google Push
@@ -415,6 +443,20 @@ rules:
   - GEOSITE,apple-cn,🍎 苹果服务
   - RULE-SET,apple,🍎 苹果服务
   - RULE-SET,icloud,🔰 iCloud
+  # Bing 会话一致性：搜索页、CN 跳转、MSN 资源和登录态域名必须固定到同一个出口，避免浏览器循环重定向。
+  - DOMAIN-SUFFIX,bing.com,🔰 BING
+  - DOMAIN-SUFFIX,bingapis.com,🔰 BING
+  - DOMAIN-SUFFIX,bing.net,🔰 BING
+  - DOMAIN-SUFFIX,msn.com,🔰 BING
+  - DOMAIN-SUFFIX,login.live.com,🔰 BING
+  - DOMAIN-SUFFIX,account.live.com,🔰 BING
+  - DOMAIN-SUFFIX,edgeservices.bing.com,🔰 BING
+  - DOMAIN-SUFFIX,assets.msn.com,🔰 BING
+  - DOMAIN-SUFFIX,c.bing.com,🔰 BING
+  - DOMAIN-SUFFIX,r.bing.com,🔰 BING
+  - DOMAIN-SUFFIX,www.bing.com,🔰 BING
+  - DOMAIN-SUFFIX,cn.bing.com,🔰 BING
+  - RULE-SET,xkww3n-bing,🔰 BING
   - GEOSITE,microsoft-cn,Ⓜ️ 微软服务
   - GEOSITE,google-cn,🔰 国内网站 # 解决国内 Google 翻译/地图
   - GEOSITE,games-cn,🎮 游戏服务 # 国内游戏直连加速
@@ -428,7 +470,6 @@ rules:
   - RULE-SET,google,🇬 谷歌服务
   # 8) 【人工智能】AI 优先策略
   - GEOSITE,ai,🤖 人工智能
-  - RULE-SET,xkww3n-bing,🤖 人工智能
   # 9) 【环大陆分流】(TLD-Proxy / GFW / Proxy)
   - GEOSITE,tld-proxy,🔰 环大陆 # 非中国顶级域名加速
   - GEOSITE,gfw,🔰 环大陆

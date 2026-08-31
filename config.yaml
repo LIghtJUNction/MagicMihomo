@@ -123,7 +123,7 @@ ntp:
   interval: 300 #间隔调大至 300s (5分钟)，减少无意义的请求，30s 太频繁了
   server-list: [time.apple.com, time.cloudflare.com, ntp.aliyun.com, pool.ntp.org]
 geox-url:
-  geoip: https://github.com/DustinWin/ruleset_geodata/releases/download/clash/geoip-all.dat
+  geoip: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-geodata/geoip-all.dat
   geosite: https://github.com/DustinWin/ruleset_geodata/releases/download/mihomo-geodata/geosite-all.dat
 proxies: []
 providers-default: # use: *ALL_PROVIDERS
